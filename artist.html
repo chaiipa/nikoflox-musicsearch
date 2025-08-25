@@ -11,6 +11,8 @@
     --primary: #7c3aed;
     --primary-hover: #a78bfa;
     --spotify-green: #1db954;
+    --yandex-yellow: #ffcc00;
+    --youtube-red: #ff0000;
     --wiki-blue: #3366cc;
     --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
   }
@@ -112,17 +114,28 @@
     gap: 1rem;
     flex-wrap: wrap;
   }
-  a.spotify, a.wikipedia {
-    padding: 0.85rem 2.5rem;
+  a.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.85rem 1.8rem;
     border-radius: 2rem;
     font-weight: 700;
     color: white;
     text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     user-select: none;
     font-size: 1.1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  }
+  a.btn-link svg {
+    fill: white;
+    width: 20px;
+    height: 20px;
+  }
+  a.btn-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
   }
   a.spotify {
     background-color: var(--spotify-green);
@@ -131,6 +144,24 @@
   a.spotify:hover {
     background-color: #17a44c;
     box-shadow: 0 0 25px #17a44ccc;
+  }
+  a.yandex {
+    background-color: var(--yandex-yellow);
+    color: #222;
+    box-shadow: 0 0 15px #ffcc00cc;
+  }
+  a.yandex:hover {
+    background-color: #e6b800;
+    box-shadow: 0 0 25px #e6b800cc;
+    color: #111;
+  }
+  a.youtube {
+    background-color: var(--youtube-red);
+    box-shadow: 0 0 15px #ff0000cc;
+  }
+  a.youtube:hover {
+    background-color: #cc0000;
+    box-shadow: 0 0 25px #cc0000cc;
   }
   a.wikipedia {
     background-color: var(--wiki-blue);
@@ -195,8 +226,10 @@
   const artists = [
     {
       name: "Noize MC",
-      image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
-      spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
+      spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
+      yandex: "https://music.yandex.ru/artist/5020",
+      youtube: "https://music.youtube.com/channel/UC3yA8nDwraeOfnYfBWun83g",
       wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
       foreignAgent: true
     },
@@ -204,6 +237,8 @@
       name: "Монеточка",
       image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
       spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+      yandex: "https://music.yandex.ru/artist/1132181",
+      youtube: "https://music.youtube.com/channel/UCy-k5JKqzIif_qFh2VLe6xA",
       wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
       foreignAgent: true
     },
@@ -211,20 +246,26 @@
       name: "Руки Вверх!",
       image: "https://upload.wikimedia.org/wikipedia/commons/3/31/Sergey_Jurov_Hands_Up_2017.jpg",
       spotify: "https://open.spotify.com/artist/6XHVuErjQ4W0M2k2Jcuplk",
+      yandex: "https://music.yandex.ru/artist/3859",
+      youtube: "https://music.youtube.com/channel/UCzqqhJvDzxHkjq_pvTk14hg",
       wikipedia: "https://ru.wikipedia.org/wiki/Руки_Вверх!",
       foreignAgent: false
     },
     {
       name: "mzlff",
-      image: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Mzlff_photo.jpg",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Mzlff_photo.jpg/600px-Mzlff_photo.jpg",
       spotify: "https://open.spotify.com/artist/5qap5aO4i9A4KsmvXEBFym",
+      yandex: "https://music.yandex.ru/artist/5785295",
+      youtube: "https://music.youtube.com/channel/UCSrxJxyQOVmLHXOQm9hrc0A",
       wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
       foreignAgent: false
     },
     {
       name: "UMA2RMAN",
-      image: "https://upload.wikimedia.org/wikipedia/commons/f/f9/UMA2RMAN_2022.jpg",
-      spotify: "https://open.spotify.com/artist/4Vn6zUt3A7W8oOdl0f42SE",
+      image: "https://upload.wikimedia.org/wikipedia/commons/9/97/UMA2RMAN_2017.jpg",
+      spotify: "https://open.spotify.com/artist/3yk7CsMVyb4iHbNuE4tdiV",
+      yandex: "https://music.yandex.ru/artist/1432",
+      youtube: "https://music.youtube.com/channel/UCjs0aUeE68c8kHVO3Xft-Mw",
       wikipedia: "https://ru.wikipedia.org/wiki/UMA2RMAN",
       foreignAgent: false
     }
@@ -265,8 +306,22 @@
             <h1 class="artist-name">${artist.name}</h1>
             ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
             <div class="buttons">
-              <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль ${artist.name}">Spotify</a>
-              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль ${artist.name}">Wikipedia</a>
+              <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 2.598z"/></svg>
+                Spotify
+              </a>
+              <a href="${artist.yandex}" target="_blank" rel="noopener" class="btn-link yandex" aria-label="Яндекс Музыка профиль ${artist.name}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm3.83 15.23c-.38.063-.757.095-1.14.095-1.652 0-2.998-1.345-2.998-3s1.346-3 2.998-3c.365 0 .722.04 1.067.12.142.03.286.065.426.104v-1.22a3.758 3.758 0 00-3.1-1.63c-2.06 0-3.72 1.66-3.72 3.72 0 2.06 1.66 3.72 3.72 3.72.492 0 .964-.12 1.37-.33v-1.18c-.14.04-.29.075-.43.1z"/></svg>
+                Яндекс Музыка
+              </a>
+              <a href="${artist.youtube}" target="_blank" rel="noopener" class="btn-link youtube" aria-label="YouTube Music профиль ${artist.name}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 15l5.19-3L10 9v6zM21.8 8.5a3.005 3.005 0 00-2.08-2.12C17.23 6 12 6 12 6s-5.23 0-7.71.38a3.005 3.005 0 00-2.08 2.12A31.64 31.64 0 002 12a31.64 31.64 0 00.21 3.5 3.005 3.005 0 002.08 2.12C6.77 18 12 18 12 18s5.23 0 7.71-.38a3.005 3.005 0 002.08-2.12c.15-.9.21-1.75.21-3.5s-.06-2.6-.21-3.5z"/></svg>
+                YouTube Music
+              </a>
+              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="btn-link wikipedia" aria-label="Википедия профиль ${artist.name}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2 3h20v18H2V3zm17 3h-2l-3 6-3-6H5v12h14V6z"/></svg>
+                Wikipedia
+              </a>
             </div>
           </div>
         </div>
@@ -276,8 +331,9 @@
         </section>
       `;
 
+      const wikiContent = document.getElementById('wiki-content');
       fetchWikiExtract(artist.name).then(html => {
-        document.getElementById('wiki-content').innerHTML = html;
+        wikiContent.innerHTML = html;
       });
     }
   }
