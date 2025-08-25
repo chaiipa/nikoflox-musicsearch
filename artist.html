@@ -1,526 +1,451 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Профиль артиста — NikoFlow</title>
-  <style>
-    :root {
-      --bg-light: #fefefe;
-      --text-light: #222;
-      --bg-dark: #121212;
-      --text-dark: #eee;
-      --primary: #7c3aed;
-      --primary-hover: #a78bfa;
-      --spotify-green: #1db954;
-      --wiki-blue: #3366cc;
-      --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Профиль артиста — NikoFlow</title>
+<style>
+  :root {
+    --bg-light: #fefefe;
+    --text-light: #222;
+    --bg-dark: #121212;
+    --text-dark: #eee;
+    --primary: #7c3aed;
+    --primary-hover: #a78bfa;
+    --spotify-green: #1db954;
+    --wiki-blue: #3366cc;
+    --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  .container {
+    max-width: 900px;
+    width: 100%;
+    animation: fadeInUp 0.7s ease forwards;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s, color 0.3s;
-      min-height: 100vh;
-      padding: 1rem;
-      box-sizing: border-box;
-      display: flex;
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  button.btn-back {
+    background-color: var(--primary);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+    color: white;
+    border: none;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-glow);
+  }
+  button.btn-back:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 1);
+  }
+  .artist-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-glow);
+    user-select: none;
+  }
+  .artist-image {
+    width: 280px;
+    height: 280px;
+    border-radius: 1.5rem;
+    object-fit: cover;
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .artist-image:hover {
+    transform: scale(1.05) rotate(3deg);
+    box-shadow: 0 12px 40px rgba(124, 58, 237, 0.9);
+  }
+  .artist-info {
+    flex: 1;
+    min-width: 220px;
+    user-select: text;
+  }
+  .artist-name {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 0.4rem;
+    color: var(--primary);
+  }
+  .badge {
+    background-color: #dc2626;
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+    user-select: none;
+    box-shadow: 0 0 12px #dc2626bb;
+  }
+  .buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  a.spotify, a.wikipedia {
+    padding: 0.85rem 2.5rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    user-select: none;
+    font-size: 1.1rem;
+  }
+  a.spotify {
+    background-color: var(--spotify-green);
+    box-shadow: 0 0 15px #1db954cc;
+  }
+  a.spotify:hover {
+    background-color: #17a44c;
+    box-shadow: 0 0 25px #17a44ccc;
+  }
+  a.wikipedia {
+    background-color: var(--wiki-blue);
+    box-shadow: 0 0 15px #3366cccc;
+  }
+  a.wikipedia:hover {
+    background-color: #254b9a;
+    box-shadow: 0 0 25px #254b9acc;
+  }
+  h2.songs-title {
+    margin-top: 2rem;
+    font-size: 1.9rem;
+    font-weight: 700;
+    user-select: none;
+    text-align: center;
+    color: var(--primary);
+    text-shadow: 0 0 6px var(--primary);
+  }
+  ul.songs {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    user-select: none;
+  }
+  ul.songs li {
+    margin-bottom: 0.8rem;
+    padding-left: 2rem;
+    position: relative;
+    border-radius: 1rem;
+    cursor: pointer;
+    background: #e9d7ff;
+    color: #4b2cbf;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+    box-shadow: 0 0 6px #7c3aed55;
+  }
+  body.dark ul.songs li {
+    background: #3a1e88;
+    color: #d8caff;
+    box-shadow: 0 0 8px #a78bfaaa;
+  }
+  ul.songs li::before {
+    content: "🎵";
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+  }
+  ul.songs li:hover {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 0 12px var(--primary);
+  }
+  ul.songs li.active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 0 18px var(--primary);
+    pointer-events: none;
+  }
+  .wiki-section {
+    margin-top: 3rem;
+    background: #f3f3f3;
+    padding: 1.7rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+    user-select: text;
+    max-width: 900px;
+    line-height: 1.6;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  body.dark .wiki-section {
+    background: #222222bb;
+    color: var(--text-dark);
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+  }
+  .wiki-section h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    user-select: none;
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary);
+  }
+  .loading {
+    color: #888;
+    font-style: italic;
+    margin-top: 1rem;
+    user-select: none;
+  }
+  /* Аудиоплеер стили */
+  .player {
+    margin-top: 2rem;
+    background: #7c3aed;
+    border-radius: 1.5rem;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-glow);
+    user-select: none;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  body.dark .player {
+    background: #a78bfa;
+    color: #2e0055;
+    box-shadow: 0 0 25px #a78bfaaa;
+  }
+  .player button {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.25s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .player button:hover {
+    background: #eee;
+  }
+  .player .time {
+    font-family: monospace;
+    font-size: 0.95rem;
+    min-width: 50px;
+    text-align: center;
+  }
+  .player input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+    border-radius: 8px;
+    height: 6px;
+    background: #d4bbff;
+    -webkit-appearance: none;
+    box-shadow: 0 0 6px #a78bfaaa inset;
+    transition: background-color 0.3s;
+  }
+  body.dark .player input[type="range"] {
+    background: #7c3aed;
+    box-shadow: 0 0 10px #a78bfaaa inset;
+  }
+  .player input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    transition: background-color 0.25s;
+  }
+  .player input[type="range"]:hover::-webkit-slider-thumb {
+    background: #f0e6ff;
+  }
+  @media (max-width: 640px) {
+    .artist-header {
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden;
-    }
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
-    }
-    .container {
-      max-width: 900px;
-      width: 100%;
-      animation: fadeInUp 0.7s ease forwards;
-    }
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    button.btn-back {
-      background-color: var(--primary);
-      padding: 0.6rem 1.2rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.25s ease;
-      user-select: none;
-      color: white;
-      border: none;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow-glow);
-    }
-    button.btn-back:hover {
-      background-color: var(--primary-hover);
-      box-shadow: 0 0 20px rgba(167, 139, 250, 1);
-    }
-    .artist-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      justify-content: center;
-      background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-glow);
-      user-select: none;
     }
     .artist-image {
-      width: 280px;
-      height: 280px;
-      border-radius: 1.5rem;
-      object-fit: cover;
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
-      flex-shrink: 0;
-      transition: transform 0.3s ease;
-    }
-    .artist-image:hover {
-      transform: scale(1.05) rotate(3deg);
-      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.9);
-    }
-    .artist-info {
-      flex: 1;
-      min-width: 220px;
-      user-select: text;
+      width: 220px;
+      height: 220px;
     }
     .artist-name {
-      font-size: 3rem;
-      font-weight: 900;
-      margin-bottom: 0.4rem;
-      color: var(--primary);
-    }
-    .badge {
-      background-color: #dc2626;
-      padding: 0.4rem 0.8rem;
-      font-size: 1rem;
-      border-radius: 0.6rem;
-      font-weight: 700;
-      display: inline-block;
-      margin-bottom: 1rem;
-      user-select: none;
-      box-shadow: 0 0 12px #dc2626bb;
-    }
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    a.spotify, a.wikipedia {
-      padding: 0.85rem 2.5rem;
-      border-radius: 2rem;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      display: inline-block;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      user-select: none;
-      font-size: 1.1rem;
-    }
-    a.spotify {
-      background-color: var(--spotify-green);
-      box-shadow: 0 0 15px #1db954cc;
-    }
-    a.spotify:hover {
-      background-color: #17a44c;
-      box-shadow: 0 0 25px #17a44ccc;
-    }
-    a.wikipedia {
-      background-color: var(--wiki-blue);
-      box-shadow: 0 0 15px #3366cccc;
-    }
-    a.wikipedia:hover {
-      background-color: #254b9a;
-      box-shadow: 0 0 25px #254b9acc;
-    }
-    h2.songs-title {
-      margin-top: 2rem;
-      font-size: 1.9rem;
-      font-weight: 700;
-      user-select: none;
+      font-size: 2.4rem;
       text-align: center;
-      color: var(--primary);
-      text-shadow: 0 0 6px var(--primary);
     }
-    ul.songs {
-      list-style: none;
-      padding-left: 0;
-      margin-top: 1rem;
-      font-size: 1.3rem;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      user-select: none;
-    }
-    ul.songs li {
-      margin-bottom: 0.8rem;
-      padding-left: 2rem;
-      position: relative;
-      border-radius: 1rem;
-      cursor: pointer;
-      background: #e9d7ff;
-      color: #4b2cbf;
-      font-weight: 600;
-      transition: background-color 0.3s, color 0.3s;
-      box-shadow: 0 0 6px #7c3aed55;
-    }
-    body.dark ul.songs li {
-      background: #3a1e88;
-      color: #d8caff;
-      box-shadow: 0 0 8px #a78bfaaa;
-    }
-    ul.songs li::before {
-      content: "🎵";
-      position: absolute;
-      left: 0.7rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-    }
-    ul.songs li:hover {
-      background-color: var(--primary);
-      color: white;
-      box-shadow: 0 0 12px var(--primary);
-    }
-    ul.songs li.active {
-      background-color: var(--primary);
-      color: white;
-      box-shadow: 0 0 18px var(--primary);
-      pointer-events: none;
-    }
-    .wiki-section {
-      margin-top: 3rem;
-      background: #f3f3f3;
-      padding: 1.7rem 2rem;
-      border-radius: 1.5rem;
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
-      user-select: text;
-      max-width: 900px;
-      line-height: 1.6;
-      color: #333;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    body.dark .wiki-section {
-      background: #222222bb;
-      color: var(--text-dark);
-      box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
-    }
-    .wiki-section h3 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      user-select: none;
-      color: var(--primary);
-      text-shadow: 0 0 5px var(--primary);
-    }
-    .loading {
-      color: #888;
-      font-style: italic;
-      margin-top: 1rem;
-      user-select: none;
-    }
-    /* Аудиоплеер стили */
     .player {
-      margin-top: 2rem;
-      background: #7c3aed;
-      border-radius: 1.5rem;
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      box-shadow: var(--shadow-glow);
-      user-select: none;
-      max-width: 450px;
-      margin-left: auto;
-      margin-right: auto;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-    body.dark .player {
-      background: #a78bfa;
-      color: #2e0055;
-      box-shadow: 0 0 25px #a78bfaaa;
-    }
-    .player button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      cursor: pointer;
-      color: var(--primary);
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.25s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .player button:hover {
-      background: #eee;
-    }
-    .player .time {
-      font-family: monospace;
-      font-size: 0.95rem;
-      min-width: 50px;
-      text-align: center;
+      flex-direction: column;
+      gap: 0.5rem;
     }
     .player input[type="range"] {
-      flex: 1;
-      cursor: pointer;
-      border-radius: 8px;
-      height: 6px;
-      background: #d4bbff;
-      -webkit-appearance: none;
-      box-shadow: 0 0 6px #a78bfaaa inset;
-      transition: background-color 0.3s;
+      width: 100%;
     }
-    body.dark .player input[type="range"] {
-      background: #7c3aed;
-      box-shadow: 0 0 10px #a78bfaaa inset;
-    }
-    .player input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      transition: background-color 0.25s;
-    }
-    .player input[type="range"]:hover::-webkit-slider-thumb {
-      background: #f0e6ff;
-    }
-    @media (max-width: 640px) {
-      .artist-header {
-        flex-direction: column;
-        align-items: center;
-      }
-      .artist-image {
-        width: 220px;
-        height: 220px;
-      }
-      .artist-name {
-        font-size: 2.4rem;
-        text-align: center;
-      }
-      .player {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      .player input[type="range"] {
-        width: 100%;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <button class="btn-back" onclick="history.back()">← Назад</button>
+  <button class="btn-back" onclick="history.back()">← Назад</button>
 
-    <div id="artist-profile"></div>
+  <div id="artist-profile"></div>
 
-  </div>
+</div>
 
-  <script>
-    const artists = [
-      {
-        name: "Noize MC",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
-        songs: [
-          { title: "Вселенная бесконечна", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Вселенная_бесконечна.mp3" },
-          { title: "Выдыхай", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Выдыхай.mp3" }
-        ],
-        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
-        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
-        foreignAgent: true
-      },
-      {
-        name: "Монеточка",
-        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
-        songs: [
-          { title: "Каждый раз", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Каждый_раз.mp3" },
-          { title: "Нет монет", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Нет_монет.mp3" }
-        ],
-        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
-        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
-        foreignAgent: true
-      }
-    ];
-
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+<script>
+  const artists = [
+    {
+      name: "Noize MC",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
+      songs: [
+        { title: "Вселенная бесконечна", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Вселенная_бесконечна.mp3" },
+        { title: "Выдыхай", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Выдыхай.mp3" }
+      ],
+      spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
+      wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+      foreignAgent: true
+    },
+    {
+      name: "Монеточка",
+      image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
+      songs: [
+        { title: "Каждый раз", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Каждый_раз.mp3" },
+        { title: "Нет монет", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Нет_монет.mp3" }
+      ],
+      spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+      wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+      foreignAgent: true
     }
+  ];
 
-    async function fetchWikiExtract(title) {
-      const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-      try {
-        const response = await fetch(endpoint);
-        if (!response.ok) throw new Error('Ошибка загрузки данных');
-        const data = await response.json();
-        return data.extract_html || data.extract || 'Описание не найдено.';
-      } catch (e) {
-        return '<p>Не удалось загрузить описание с Википедии.</p>';
-      }
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  async function fetchWikiExtract(title) {
+    const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error('Ошибка загрузки данных');
+      const data = await response.json();
+      return data.extract_html || data.extract || 'Описание не найдено.';
+    } catch (e) {
+      return '<p>Не удалось загрузить описание с Википедии.</p>';
     }
+  }
 
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-      return `${m}:${s}`;
-    }
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
 
-    const artistNameRaw = getQueryParam('name');
-    const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
-    const profileDiv = document.getElementById('artist-profile');
+  const artistNameRaw = getQueryParam('name');
+  const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
+  const profileDiv = document.getElementById('artist-profile');
 
-    if (!artistName) {
-      profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+  if (!artistName) {
+    profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+  } else {
+    const artist = artists.find(a => a.name === artistName);
+    if (!artist) {
+      profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
     } else {
-      const artist = artists.find(a => a.name === artistName);
-      if (!artist) {
-        profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
-      } else {
-        profileDiv.innerHTML = `
-          <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
-            <img src="${artist.image}" alt="${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
-            <div class="artist-info">
-              <h1 class="artist-name">${artist.name}</h1>
-              ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-              <div class="buttons">
-                <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль ${artist.name}">Spotify</a>
-                <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль ${artist.name}">Wikipedia</a>
-              </div>
+      profileDiv.innerHTML = `
+        <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
+          <img src="${artist.image}" alt="${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
+          <div class="artist-info">
+            <h1 class="artist-name">${artist.name}</h1>
+            ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+            <div class="buttons">
+              <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль ${artist.name}">Spotify</a>
+              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль ${artist.name}">Wikipedia</a>
             </div>
           </div>
-          <h2 class="songs-title">Песни:</h2>
-          <ul class="songs" id="song-list" role="list" aria-label="Список песен артиста">
-            ${artist.songs.map((s,i) => `<li tabindex="0" data-index="${i}" role="listitem">${s.title}</li>`).join('')}
-          </ul>
-          <div class="player" id="audio-player" aria-label="Аудиоплеер">
-            <button id="play-pause" aria-label="Воспроизвести">&#9658;</button>
-            <span class="time" id="current-time">00:00</span>
-            <input type="range" id="progress" value="0" min="0" max="100" step="1" aria-label="Прогресс воспроизведения" />
-            <span class="time" id="duration">00:00</span>
-          </div>
-          <section class="wiki-section" aria-live="polite" tabindex="0">
-            <h3>Описание из Википедии</h3>
-            <div id="wiki-content" class="loading">Загрузка...</div>
-          </section>
-        `;
+        </div>
+        <h2 class="songs-title">Песни:</h2>
+        <ul class="songs" id="song-list" role="list" aria-label="Список песен артиста">
+          ${artist.songs.map((s,i) => `<li tabindex="0" data-index="${i}" role="listitem">${s.title}</li>`).join('')}
+        </ul>
+        <div class="player" id="audio-player" aria-label="Аудиоплеер">
+          <button id="play-pause" aria-label="Воспроизвести">&#9658;</button>
+          <span class="time" id="current-time">00:00</span>
+          <input type="range" id="progress" value="0" min="0" max="100" step="1" aria-label="Прогресс воспроизведения" />
+          <span class="time" id="duration">00:00</span>
+        </div>
+        <section class="wiki-section" aria-live="polite" tabindex="0">
+          <h3>Описание из Википедии</h3>
+          <div id="wiki-content" class="loading">Загрузка...</div>
+        </section>
+      `;
 
-        fetchWikiExtract(artist.name).then(html => {
-          document.getElementById('wiki-content').innerHTML = html;
-        });
+      fetchWikiExtract(artist.name).then(html => {
+        document.getElementById('wiki-content').innerHTML = html;
+      });
 
-        const audio = new Audio();
-        let currentTrackIndex = 0;
-        const playPauseBtn = document.getElementById('play-pause');
-        const progress = document.getElementById('progress');
-        const currentTimeSpan = document.getElementById('current-time');
-        const durationSpan = document.getElementById('duration');
-        const songList = document.getElementById('song-list');
+      const audio = new Audio();
+      let currentTrackIndex = 0;
+      const playPauseBtn = document.getElementById('play-pause');
+      const progress = document.getElementById('progress');
+      const currentTimeSpan = document.getElementById('current-time');
+      const durationSpan = document.getElementById('duration');
+      const songList = document.getElementById('song-list');
 
-        function loadTrack(index) {
-          currentTrackIndex = index;
-          audio.src = artist.songs[index].src;
-          audio.load();
-          Array.from(songList.children).forEach(li => li.classList.remove('active'));
-          const activeLi = songList.querySelector(`li[data-index="${index}"]`);
-          if (activeLi) activeLi.classList.add('active');
-          playPauseBtn.innerHTML = "&#9658;"; // Play icon
-          currentTimeSpan.textContent = "00:00";
-          durationSpan.textContent = "00:00";
-          progress.value = 0;
-        }
-
-        loadTrack(currentTrackIndex);
-
-        playPauseBtn.addEventListener('click', () => {
-          if (audio.paused) {
-            audio.play();
-            playPauseBtn.innerHTML = "&#10073;&#10073;"; // Pause icon
-          } else {
-            audio.pause();
-            playPauseBtn.innerHTML = "&#9658;"; // Play icon
-          }
-        });
-
-        audio.addEventListener('loadedmetadata', () => {
-          durationSpan.textContent = formatTime(audio.duration);
-          progress.max = Math.floor(audio.duration);
-        });
-
-        audio.addEventListener('timeupdate', () => {
-          progress.value = Math.floor(audio.currentTime);
-          currentTimeSpan.textContent = formatTime(audio.currentTime);
-        });
-
-        progress.addEventListener('input', () => {
-          audio.currentTime = progress.value;
-        });
-
-        songList.addEventListener('click', e => {
-          if (e.target.tagName.toLowerCase() === 'li') {
-            const idx = +e.target.getAttribute('data-index');
-            if (idx !== currentTrackIndex) loadTrack(idx);
-            audio.play();
-            playPauseBtn.innerHTML = "&#10073;&#10073;";
-          }
-        });
-
-        songList.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            const idx = +e.target.getAttribute('data-index');
-            if (idx !== currentTrackIndex) loadTrack(idx);
-            audio.play();
-            playPauseBtn.innerHTML = "&#10073;&#10073;";
-            e.preventDefault();
-          }
-        });
-
-        audio.addEventListener('ended', () => {
-          if (currentTrackIndex < artist.songs.length - 1) {
-            loadTrack(currentTrackIndex + 1);
-            audio.play();
-            playPauseBtn.innerHTML = "&#10073;&#10073;";
-          } else {
-            playPauseBtn.innerHTML = "&#9658;";
-          }
-        });
-
-        // Синхронизация темы (если нужно)
-        function setTheme(theme) {
-          if (theme === 'dark') {
-            document.body.classList.add('dark');
-          } else {
-            document.body.classList.remove('dark');
-          }
-        }
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-
-      }
-    }
-  </script>
-
-</body>
-</html>
+      function loadTrack(index) {
+        currentTrackIndex = index;
+        audio.src = artist.songs[index].src;
+        audio.load();
+        Array.from(songList.children).forEach(li => li.classList.remove('active'));
+        const activeLi = songList.querySelector(`li[data-index="${index}"]`);
+        if (activeLi) activeLi.classList.add('active');
+        playPauseBtn.innerHTML = "&#9658;"; // Play icon
+        currentTimeSpan.textContent = "00:00";
+       
