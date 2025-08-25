@@ -1,240 +1,232 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>NikoFlow — Музыкальный поиск</title>
-<style>
-  :root {
-    --bg-light: #fafafa;
-    --text-light: #222;
-    --bg-dark: #121212;
-    --text-dark: #eee;
-    --primary: #7c3aed;
-    --primary-hover: #a78bfa;
-    --shadow-glow: 0 0 15px rgba(124, 58, 237, 0.7);
-  }
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-light);
-    color: var(--text-light);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  body.dark {
-    background: var(--bg-dark);
-    color: var(--text-dark);
-  }
-  header {
-    max-width: 900px;
-    width: 100%;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-  }
-  header h1 {
-    font-weight: 900;
-    font-size: 2.4rem;
-    color: var(--primary);
-    cursor: default;
-  }
-  .theme-toggle {
-    cursor: pointer;
-    background: var(--primary);
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    font-weight: 700;
-    box-shadow: var(--shadow-glow);
-    transition: background-color 0.3s ease;
-  }
-  .theme-toggle:hover {
-    background: var(--primary-hover);
-  }
-  main {
-    max-width: 900px;
-    width: 100%;
-  }
-  input#search {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 1.2rem;
-    border: 2px solid var(--primary);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    outline-offset: 2px;
-    transition: border-color 0.3s;
-  }
-  input#search:focus {
-    border-color: var(--primary-hover);
-  }
-  ul#artist-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-    gap: 1.5rem;
-  }
-  ul#artist-list li {
-    background: #f4ebff;
-    border-radius: 1.5rem;
-    padding: 1rem;
-    box-shadow: 0 0 15px #a78bfaaa;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    user-select: none;
-  }
-  ul#artist-list li:hover,
-  ul#artist-list li:focus-visible {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-glow);
-    outline: none;
-  }
-  ul#artist-list li img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 0 10px #7c3aedcc;
-    user-select: none;
-  }
-  ul#artist-list li .artist-name {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--primary);
-    text-align: center;
-  }
-  ul#artist-list li .badge {
-    margin-top: 0.3rem;
-    background-color: #dc2626;
-    color: white;
-    font-weight: 700;
-    font-size: 0.85rem;
-    border-radius: 0.5rem;
-    padding: 0.2rem 0.7rem;
-    user-select: none;
-  }
-  body.dark ul#artist-list li {
-    background: #2b1b6b;
-    box-shadow: 0 0 20px #a78bfaaa;
-  }
-  body.dark ul#artist-list li .artist-name {
-    color: #d8caff;
-  }
-
-  /* Accessibility focus */
-  ul#artist-list li:focus-visible {
-    outline: 3px solid var(--primary);
-  }
-
-  @media (max-width: 480px) {
-    ul#artist-list {
-      grid-template-columns: 1fr;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NikoFlow — Музыкальный поиск</title>
+  <style>
+    :root {
+      --bg-light: #fefefe;
+      --text-light: #222;
+      --bg-dark: #121212;
+      --text-dark: #eee;
+      --primary: #7c3aed;
+      --primary-hover: #a78bfa;
+      --spotify-green: #1db954;
+      --wiki-blue: #3366cc;
     }
-    ul#artist-list li img {
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--primary);
+      user-select: none;
+    }
+    .theme-toggle {
+      cursor: pointer;
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 0.6rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    .theme-toggle:hover {
+      background: var(--primary-hover);
+    }
+    #search-input {
       width: 100%;
-      height: auto;
+      max-width: 400px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
       border-radius: 1rem;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
     }
-  }
-</style>
+    body.dark #search-input {
+      border-color: #555;
+      background: #222;
+      color: var(--text-dark);
+    }
+    #search-input:focus {
+      border-color: var(--primary);
+    }
+    .artist-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 1rem;
+      padding-bottom: 2rem;
+    }
+    .artist-card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      user-select: none;
+    }
+    body.dark .artist-card {
+      background: #222;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    }
+    .artist-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.7);
+    }
+    .artist-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 1rem;
+      margin-bottom: 0.8rem;
+      user-select: none;
+    }
+    .artist-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .foreign-agent-badge {
+      background: #dc2626;
+      color: white;
+      font-weight: 700;
+      border-radius: 1rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      user-select: none;
+      margin-bottom: 0.3rem;
+      display: inline-block;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>NikoFlow</h1>
-  <button class="theme-toggle" aria-label="Переключить тему" id="theme-toggle">Тёмная тема</button>
-</header>
+  <header>
+    <h1>NikoFlow</h1>
+    <button class="theme-toggle" id="theme-toggle">Тёмная тема</button>
+  </header>
 
-<main>
-  <input type="search" id="search" placeholder="Поиск артиста..." aria-label="Поиск артиста" autocomplete="off" />
-  <ul id="artist-list" role="list" aria-live="polite" aria-label="Список артистов"></ul>
-</main>
+  <input type="search" id="search-input" placeholder="Поиск артиста..." aria-label="Поиск артиста" />
 
-<script>
-  const artists = [
-    {
-      name: "Noize MC",
-      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
-      foreignAgent: true
-    },
-    {
-      name: "Монеточка",
-      image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
-      foreignAgent: true
+  <section class="artist-list" id="artist-list" role="list">
+    <!-- Карточки артистов появятся здесь -->
+  </section>
+
+  <script>
+    const artists = [
+      {
+        name: "Noize MC",
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
+        songs: ["Вселенная бесконечна", "Выдыхай"],
+        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
+        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+        foreignAgent: true
+      },
+      {
+        name: "Монеточка",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
+        songs: ["Каждый раз", "Нет монет"],
+        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+        foreignAgent: true
+      }
+      // Добавляй сюда новых артистов по желанию
+    ];
+
+    const artistList = document.getElementById('artist-list');
+    const searchInput = document.getElementById('search-input');
+
+    function renderArtists(filter = '') {
+      const filtered = artists.filter(a =>
+        a.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      artistList.innerHTML = '';
+      if (filtered.length === 0) {
+        artistList.innerHTML = '<p>Артисты не найдены.</p>';
+        return;
+      }
+      filtered.forEach(artist => {
+        const card = document.createElement('div');
+        card.className = 'artist-card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'listitem');
+        card.innerHTML = `
+          ${artist.foreignAgent ? '<div class="foreign-agent-badge">Признан иноагентом в РФ</div>' : ''}
+          <img src="${artist.image}" alt="Фото ${artist.name}" />
+          <div class="artist-name">${artist.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          const encodedName = encodeURIComponent(artist.name);
+          window.location.href = `artist.html?name=${encodedName}`;
+        });
+        card.addEventListener('keypress', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            card.click();
+          }
+        });
+        artistList.appendChild(card);
+      });
     }
-  ];
 
-  const artistList = document.getElementById('artist-list');
-  const searchInput = document.getElementById('search');
+    // Изначальная отрисовка
+    renderArtists();
 
-  function renderArtists(filter = '') {
-    const filtered = artists.filter(a => a.name.toLowerCase().includes(filter.toLowerCase()));
-    artistList.innerHTML = filtered.map(a => `
-      <li tabindex="0" role="button" aria-pressed="false" aria-label="Перейти в профиль артиста ${a.name}" data-name="${a.name}">
-        <img src="${a.image}" alt="Фото ${a.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=No+Image'" />
-        <div class="artist-name">${a.name}</div>
-        ${a.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-      </li>
-    `).join('');
-  }
+    // Поиск
+    searchInput.addEventListener('input', e => {
+      renderArtists(e.target.value);
+    });
 
-  renderArtists();
-
-  searchInput.addEventListener('input', () => {
-    renderArtists(searchInput.value);
-  });
-
-  artistList.addEventListener('click', e => {
-    const li = e.target.closest('li[data-name]');
-    if (li) {
-      const artistName = li.getAttribute('data-name');
-      window.location.href = `artist.html?name=${encodeURIComponent(artistName)}`;
+    // Тёмная тема
+    const themeToggle = document.getElementById('theme-toggle');
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark');
+        themeToggle.textContent = 'Светлая тема';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark');
+        themeToggle.textContent = 'Тёмная тема';
+        localStorage.setItem('theme', 'light');
+      }
     }
-  });
 
-  artistList.addEventListener('keydown', e => {
-    if ((e.key === 'Enter' || e.key === ' ') && e.target.tagName === 'LI') {
-      e.preventDefault();
-      const artistName = e.target.getAttribute('data-name');
-      window.location.href = `artist.html?name=${encodeURIComponent(artistName)}`;
-    }
-  });
+    // Читаем из localStorage и ставим тему
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
 
-  // Тема
-  const themeToggle = document.getElementById('theme-toggle');
-  function setTheme(theme) {
-    if(theme === 'dark') {
-      document.body.classList.add('dark');
-      themeToggle.textContent = 'Светлая тема';
-    } else {
-      document.body.classList.remove('dark');
-      themeToggle.textContent = 'Тёмная тема';
-    }
-    localStorage.setItem('nikoTheme', theme);
-  }
-  themeToggle.addEventListener('click', () => {
-    const current = document.body.classList.contains('dark') ? 'dark' : 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
-  });
-  // Загрузка темы из localStorage
-  const savedTheme = localStorage.getItem('nikoTheme') || 'light';
-  setTheme(savedTheme);
-
-</script>
+    themeToggle.addEventListener('click', () => {
+      const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+      setTheme(newTheme);
+    });
+  </script>
 
 </body>
 </html>
