@@ -3,51 +3,148 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NikoFlow</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <title>NikoFlow — Музыкальный поиск</title>
   <style>
+    :root {
+      --bg-light: #fefefe;
+      --text-light: #222;
+      --bg-dark: #121212;
+      --text-dark: #eee;
+      --primary: #7c3aed;
+      --primary-hover: #a78bfa;
+      --spotify-green: #1db954;
+      --wiki-blue: #3366cc;
+    }
     body {
-      background: linear-gradient(to right, #111827, #1f2937);
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
     }
-    .card {
-      background-color: #1f2937;
-      border-radius: 1rem;
-      box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--primary);
+      user-select: none;
+    }
+    .theme-toggle {
       cursor: pointer;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 36px rgb(147 51 234 / 0.7);
-    }
-    .badge {
-      background-color: #dc2626;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
-      border-radius: 0.5rem;
-      display: inline-block;
-      margin-bottom: 0.5rem;
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 0.6rem;
       font-weight: 600;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    .theme-toggle:hover {
+      background: var(--primary-hover);
+    }
+    #search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      border-radius: 1rem;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    body.dark #search-input {
+      border-color: #555;
+      background: #222;
+      color: var(--text-dark);
+    }
+    #search-input:focus {
+      border-color: var(--primary);
+    }
+    .artist-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 1rem;
+      padding-bottom: 2rem;
+    }
+    .artist-card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      user-select: none;
+    }
+    body.dark .artist-card {
+      background: #222;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    }
+    .artist-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.7);
+    }
+    .artist-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 1rem;
+      margin-bottom: 0.8rem;
+      user-select: none;
+    }
+    .artist-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .foreign-agent-badge {
+      background: #dc2626;
+      color: white;
+      font-weight: 700;
+      border-radius: 1rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      user-select: none;
+      margin-bottom: 0.3rem;
+      display: inline-block;
     }
   </style>
 </head>
-<body class="min-h-screen px-6 py-8">
+<body>
 
-  <header class="text-3xl font-bold mb-12 text-purple-400 tracking-wide select-none">
-    NikoFlow
+  <header>
+    <h1>NikoFlow</h1>
+    <button class="theme-toggle" id="theme-toggle">Тёмная тема</button>
   </header>
 
-  <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
-    <!-- Артисты сюда добавятся -->
-  </main>
+  <input type="search" id="search-input" placeholder="Поиск артиста..." aria-label="Поиск артиста" />
+
+  <section class="artist-list" id="artist-list" role="list">
+    <!-- Карточки артистов появятся здесь -->
+  </section>
 
   <script>
     const artists = [
       {
         name: "Noize MC",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/320px-Noize_MC_2014.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
         songs: ["Вселенная бесконечна", "Выдыхай"],
         spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
         wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
@@ -55,36 +152,81 @@
       },
       {
         name: "Монеточка",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Monetochka_2021.jpg/320px-Monetochka_2021.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
         songs: ["Каждый раз", "Нет монет"],
         spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
         wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
         foreignAgent: true
       }
+      // Добавляй сюда новых артистов по желанию
     ];
 
-    const main = document.querySelector('main');
+    const artistList = document.getElementById('artist-list');
+    const searchInput = document.getElementById('search-input');
 
-    artists.forEach(artist => {
-      const card = document.createElement('div');
-      card.className = 'card p-5 cursor-pointer flex flex-col items-center text-center';
-      card.innerHTML = `
-        <img src="${artist.image}" alt="${artist.name}" class="rounded-2xl w-full h-64 object-cover mb-6 shadow-lg" />
-        <h2 class="text-2xl font-semibold mb-2">${artist.name}</h2>
-        ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-      `;
-
-      // При клике идём на artist.html с именем артиста в параметре
-      card.addEventListener('click', () => {
-        const encodedName = encodeURIComponent(artist.name);
-        window.location.href = `artist.html?name=${encodedName}`;
+    function renderArtists(filter = '') {
+      const filtered = artists.filter(a =>
+        a.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      artistList.innerHTML = '';
+      if (filtered.length === 0) {
+        artistList.innerHTML = '<p>Артисты не найдены.</p>';
+        return;
+      }
+      filtered.forEach(artist => {
+        const card = document.createElement('div');
+        card.className = 'artist-card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'listitem');
+        card.innerHTML = `
+          ${artist.foreignAgent ? '<div class="foreign-agent-badge">Признан иноагентом в РФ</div>' : ''}
+          <img src="${artist.image}" alt="Фото ${artist.name}" />
+          <div class="artist-name">${artist.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          const encodedName = encodeURIComponent(artist.name);
+          window.location.href = `artist.html?name=${encodedName}`;
+        });
+        card.addEventListener('keypress', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            card.click();
+          }
+        });
+        artistList.appendChild(card);
       });
+    }
 
-      main.appendChild(card);
+    // Изначальная отрисовка
+    renderArtists();
+
+    // Поиск
+    searchInput.addEventListener('input', e => {
+      renderArtists(e.target.value);
+    });
+
+    // Тёмная тема
+    const themeToggle = document.getElementById('theme-toggle');
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark');
+        themeToggle.textContent = 'Светлая тема';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark');
+        themeToggle.textContent = 'Тёмная тема';
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    // Читаем из localStorage и ставим тему
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+      setTheme(newTheme);
     });
   </script>
 
 </body>
 </html>
-
-
