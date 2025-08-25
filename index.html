@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NikoFlow</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #111827, #1f2937);
+      color: white;
+    }
+  </style>
+</head>
+<body class="min-h-screen px-4 py-6">
+
+  <!-- Название сайта -->
+  <header class="text-xl font-bold mb-8 text-gray-100">
+    <span class="text-purple-400">NikoFlow</span>
+  </header>
+
+  <!-- Контейнер артистов -->
+  <div id="artist-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <script>
+    const artists = [
+      {
+        name: "МакSим",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/MakSim_in_2021.jpg/320px-MakSim_in_2021.jpg",
+        songs: ["Знаешь ли ты", "Мой рай"],
+        spotify: "https://open.spotify.com/artist/5EDtlHHyBzF5DHiRGDL38j",
+        wikipedia: "https://ru.wikipedia.org/wiki/МакSим"
+      },
+      {
+        name: "Оксимирон",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Oxxxymiron_2021.jpg/320px-Oxxxymiron_2021.jpg",
+        songs: ["Где нас нет", "Кто убил Марка?"],
+        spotify: "https://open.spotify.com/artist/1TtJ8j22Roc24e2Jx3OcU4",
+        wikipedia: "https://ru.wikipedia.org/wiki/Оксимирон"
+      }
+    ];
+
+    const container = document.getElementById("artist-list");
+
+    artists.forEach((artist, i) => {
+      const el = document.createElement("div");
+      el.className = "bg-gray-800 p-4 rounded-2xl shadow-lg hover:scale-105 transition transform duration-300";
+      el.setAttribute("data-aos", "fade-up");
+      el.innerHTML = `
+        <img src="${artist.image}" alt="${artist.name}" class="rounded-xl w-full h-60 object-cover mb-4">
+        <h2 class="text-2xl font-semibold mb-2">${artist.name}</h2>
+        <ul class="mb-3 text-sm text-gray-300">
+          ${artist.songs.map(song => `<li>🎵 ${song}</li>`).join("")}
+        </ul>
+        <div class="flex space-x-4">
+          <a href="${artist.spotify}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-xl text-sm">Spotify</a>
+          <a href="${artist.wikipedia}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Wikipedia</a>
+        </div>
+      `;
+      container.appendChild(el);
+    });
+
+    AOS.init();
+  </script>
+
+</body>
+</html>
 
