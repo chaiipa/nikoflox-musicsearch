@@ -14,6 +14,7 @@
       --primary-hover: #a78bfa;
       --spotify-green: #1db954;
       --wiki-blue: #3366cc;
+      --red-badge: #dc2626;
     }
     body {
       margin: 0;
@@ -78,7 +79,7 @@
     }
     .artist-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
       padding-bottom: 2rem;
     }
@@ -115,7 +116,7 @@
       margin-bottom: 0.2rem;
     }
     .foreign-agent-badge {
-      background: #dc2626;
+      background: var(--red-badge);
       color: white;
       font-weight: 700;
       border-radius: 1rem;
@@ -128,77 +129,30 @@
   </style>
 </head>
 <body>
-
   <header>
     <h1>NikoFlow</h1>
     <button class="theme-toggle" id="theme-toggle">Тёмная тема</button>
   </header>
-
   <input type="search" id="search-input" placeholder="Поиск артиста..." aria-label="Поиск артиста" />
-
   <section class="artist-list" id="artist-list" role="list">
     <!-- Карточки артистов появятся здесь -->
   </section>
 
   <script>
     const artists = [
-      {
-        name: "Noize MC",
-        image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
-        songs: ["Вселенная бесконечна", "Выдыхай"],
-        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
-        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
-        foreignAgent: true
-      },
-      {
-        name: "Монеточка",
-        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
-        songs: ["Каждый раз", "Нет монет"],
-        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
-        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
-        foreignAgent: true
-      },
-      {
-        name: "Руки Вверх!",
-        image: "https://upload.wikimedia.org/wikipedia/commons/2/22/Ruki_Vverh_2016.jpg",
-        songs: ["18 мне уже", "Крошка моя"],
-        spotify: "https://open.spotify.com/artist/0o6z57GxnRFT4cEppAZHix",
-        wikipedia: "https://ru.wikipedia.org/wiki/Руки_Вверх!",
-        foreignAgent: false
-      },
-      {
-        name: "mzlff",
-        image: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Mzlff.jpg",
-        songs: ["BZRP Music Sessions, Vol. 48"],
-        spotify: "https://open.spotify.com/artist/5gkRJjWloBAXRjYEDzHpcX",
-        wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
-        foreignAgent: false
-      },
-      {
-        name: "Zivert",
-        image: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Zivert_2021.jpg",
-        songs: ["Life", "Credo"],
-        spotify: "https://open.spotify.com/artist/2reF3wpCQ1k2KmlZ9IW2oY",
-        wikipedia: "https://ru.wikipedia.org/wiki/Zivert",
-        foreignAgent: false
-      },
-      {
-        name: "Артур Пирожков",
-        image: "https://upload.wikimedia.org/wikipedia/commons/3/31/Artur_Pirozhkov.jpg",
-        songs: ["Чика", "В Питере - пить"],
-        spotify: "https://open.spotify.com/artist/0obKFl7PeQjTX56vU8VXqK",
-        wikipedia: "https://ru.wikipedia.org/wiki/Артур_Пирожков",
-        foreignAgent: false
-      }
+      { name: "Noize MC", image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg", foreignAgent: true },
+      { name: "Монеточка", image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg", foreignAgent: true },
+      { name: "Земфира", image: "https://upload.wikimedia.org/wikipedia/commons/0/06/Zemfira_Ramazanova_2019.jpg", foreignAgent: false },
+      { name: "Кино", image: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Kino_1986.jpg", foreignAgent: false },
+      { name: "Би-2", image: "https://upload.wikimedia.org/wikipedia/commons/6/69/BI-2_in_2019.jpg", foreignAgent: false }
+      // Добавляй сюда любых артистов
     ];
 
     const artistList = document.getElementById('artist-list');
     const searchInput = document.getElementById('search-input');
 
     function renderArtists(filter = '') {
-      const filtered = artists.filter(a =>
-        a.name.toLowerCase().includes(filter.toLowerCase())
-      );
+      const filtered = artists.filter(a => a.name.toLowerCase().includes(filter.toLowerCase()));
       artistList.innerHTML = '';
       if (filtered.length === 0) {
         artistList.innerHTML = '<p>Артисты не найдены.</p>';
@@ -220,6 +174,7 @@
         });
         card.addEventListener('keypress', e => {
           if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             card.click();
           }
         });
@@ -227,10 +182,8 @@
       });
     }
 
-    // Изначальная отрисовка
     renderArtists();
 
-    // Поиск
     searchInput.addEventListener('input', e => {
       renderArtists(e.target.value);
     });
@@ -241,24 +194,19 @@
       if (theme === 'dark') {
         document.body.classList.add('dark');
         themeToggle.textContent = 'Светлая тема';
-        localStorage.setItem('theme', 'dark');
+        localStorage.setItem('nikoTheme', 'dark');
       } else {
         document.body.classList.remove('dark');
         themeToggle.textContent = 'Тёмная тема';
-        localStorage.setItem('theme', 'light');
+        localStorage.setItem('nikoTheme', 'light');
       }
     }
-
-    // Читаем из localStorage и ставим тему
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('nikoTheme') || 'light';
     setTheme(savedTheme);
-
     themeToggle.addEventListener('click', () => {
       const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
       setTheme(newTheme);
     });
   </script>
-
 </body>
 </html>
-
