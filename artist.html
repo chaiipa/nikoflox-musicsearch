@@ -253,199 +253,316 @@
   body.dark .player {
     background: #a78bfa;
     color: #2e0055;
-    box-shadow: 0 0 25px #a78bfaaa;
+    box-shadow: 0 0 20px #a78bfaaa;
   }
   .player button {
-    background: white;
+    background: transparent;
     border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
+    color: inherit;
+    font-size: 1.7rem;
     cursor: pointer;
-    color: var(--primary);
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
     transition: background-color 0.25s;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    user-select: none;
   }
   .player button:hover {
-    background: #eee;
+    background-color: rgba(255 255 255 / 0.3);
   }
-  .player .time {
-    font-family: monospace;
-    font-size: 0.95rem;
-    min-width: 50px;
-    text-align: center;
+  .player button:disabled {
+    color: rgba(255 255 255 / 0.5);
+    cursor: default;
   }
-  .player input[type="range"] {
+  .progress-container {
     flex: 1;
+    height: 10px;
+    background: rgba(255 255 255 / 0.3);
+    border-radius: 10px;
     cursor: pointer;
-    border-radius: 8px;
-    height: 6px;
-    background: #d4bbff;
-    -webkit-appearance: none;
-    box-shadow: 0 0 6px #a78bfaaa inset;
-    transition: background-color 0.3s;
+    user-select: none;
+    position: relative;
   }
-  body.dark .player input[type="range"] {
-    background: #7c3aed;
-    box-shadow: 0 0 10px #a78bfaaa inset;
-  }
-  .player input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+  .progress {
+    height: 100%;
+    width: 0%;
     background: white;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    transition: background-color 0.25s;
+    border-radius: 10px;
+    transition: width 0.2s linear;
   }
-  .player input[type="range"]:hover::-webkit-slider-thumb {
-    background: #f0e6ff;
+  .time {
+    font-size: 0.85rem;
+    min-width: 55px;
+    text-align: center;
+    user-select: none;
   }
-  @media (max-width: 640px) {
+  /* Ссылки "Википедия" и "Spotify" при наведении с анимацией */
+  .buttons a:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+  }
+  @media (max-width: 500px) {
     .artist-header {
       flex-direction: column;
-      align-items: center;
     }
     .artist-image {
-      width: 220px;
-      height: 220px;
-    }
-    .artist-name {
-      font-size: 2.4rem;
-      text-align: center;
-    }
-    .player {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .player input[type="range"] {
-      width: 100%;
+      width: 90vw;
+      height: auto;
+      max-height: 400px;
     }
   }
 </style>
 </head>
 <body>
+<div class="container" role="main">
+  <button class="btn-back" aria-label="Вернуться на главную страницу" id="btn-back">&larr; Назад</button>
+  <section class="artist-header" aria-label="Информация об артисте">
+    <img src="" alt="Фото артиста" class="artist-image" id="artist-image" />
+    <div class="artist-info">
+      <h1 class="artist-name" id="artist-name"></h1>
+      <div class="badge" id="foreign-agent-badge" style="display:none;">Признан иноагентом в РФ</div>
+      <div class="buttons">
+        <a href="#" target="_blank" rel="noopener noreferrer" class="spotify" id="spotify-link" aria-label="Открыть Spotify артиста">Spotify</a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="wikipedia" id="wikipedia-link" aria-label="Открыть Википедию артиста">Википедия</a>
+      </div>
+    </div>
+  </section>
 
-<div class="container">
+  <h2 class="songs-title">Песни</h2>
+  <ul class="songs" id="songs-list" role="list" aria-label="Плейлист песен"></ul>
 
-  <button class="btn-back" onclick="history.back()">← Назад</button>
+  <div class="player" role="region" aria-label="Аудиоплеер">
+    <button id="btn-prev" aria-label="Предыдущая песня" title="Предыдущая песня">⏮</button>
+    <button id="btn-play" aria-label="Воспроизвести" title="Воспроизвести">▶️</button>
+    <button id="btn-pause" aria-label="Пауза" title="Пауза" style="display:none;">⏸</button>
+    <button id="btn-next" aria-label="Следующая песня" title="Следующая песня">⏭</button>
+    <div class="progress-container" id="progress-container" tabindex="0" aria-label="Прогресс песни" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="progress" id="progress"></div>
+    </div>
+    <div class="time" id="current-time">0:00</div>
+    <div class="time" id="duration">0:00</div>
+  </div>
 
-  <div id="artist-profile"></div>
-
+  <section class="wiki-section" aria-live="polite" aria-atomic="true">
+    <h3>Описание с Википедии</h3>
+    <div id="wiki-description" class="wiki-description">Загрузка...</div>
+  </section>
 </div>
 
 <script>
-  const artists = [
-    {
+  // Данные артистов и их песен
+  const artistsData = {
+    "Noize MC": {
       name: "Noize MC",
       image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
+      foreignAgent: true,
+      spotifyUrl: "https://open.spotify.com/artist/1XeW3JclZQt9t86TxsFp9a",
+      wikiUrl: "https://ru.wikipedia.org/wiki/Noize_MC",
       songs: [
-        { title: "Вселенная бесконечна", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Вселенная_бесконечна.mp3" },
-        { title: "Выдыхай", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Выдыхай.mp3" }
-      ],
-      spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
-      wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
-      foreignAgent: true
+        { title: "Вселенная бесконечна", url: "https://cdn.jsdelivr.net/gh/jbrown610/audios@master/Noize%20MC%20-%20Vselennaya%20Besconechna.mp3" },
+        { title: "Горшок", url: "https://cdn.jsdelivr.net/gh/jbrown610/audios@master/Noize%20MC%20-%20Gorshok.mp3" }
+      ]
     },
-    {
+    "Монеточка": {
       name: "Монеточка",
       image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
+      foreignAgent: true,
+      spotifyUrl: "https://open.spotify.com/artist/5Fi7sAkE9lJAUVJn80w0EY",
+      wikiUrl: "https://ru.wikipedia.org/wiki/Монеточка",
       songs: [
-        { title: "Каждый раз", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Каждый_раз.mp3" },
-        { title: "Нет монет", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Нет_монет.mp3" }
-      ],
-      spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
-      wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
-      foreignAgent: true
+        { title: "Каждый раз", url: "https://cdn.jsdelivr.net/gh/jbrown610/audios@master/Monetochka%20-%20Kazhdyj%20Raz.mp3" },
+        { title: "Нимфоманка", url: "https://cdn.jsdelivr.net/gh/jbrown610/audios@master/Monetochka%20-%20Nimfomanka.mp3" }
+      ]
     }
-  ];
+  };
 
-  function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
+  // Получаем имя артиста из параметра URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const artistNameParam = urlParams.get('name') || "";
+  const artistData = artistsData[artistNameParam];
 
-  async function fetchWikiExtract(title) {
-    const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-    try {
-      const response = await fetch(endpoint);
-      if (!response.ok) throw new Error('Ошибка загрузки данных');
-      const data = await response.json();
-      return data.extract_html || data.extract || 'Описание не найдено.';
-    } catch (e) {
-      return '<p>Не удалось загрузить описание с Википедии.</p>';
-    }
-  }
+  const artistImage = document.getElementById('artist-image');
+  const artistNameEl = document.getElementById('artist-name');
+  const foreignAgentBadge = document.getElementById('foreign-agent-badge');
+  const spotifyLink = document.getElementById('spotify-link');
+  const wikipediaLink = document.getElementById('wikipedia-link');
+  const songsList = document.getElementById('songs-list');
+  const btnBack = document.getElementById('btn-back');
 
-  function formatTime(seconds) {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  }
-
-  const artistNameRaw = getQueryParam('name');
-  const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
-  const profileDiv = document.getElementById('artist-profile');
-
-  if (!artistName) {
-    profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+  if (!artistData) {
+    document.body.innerHTML = `<p style="padding: 2rem; font-size: 1.5rem; text-align: center;">Артист не найден. <a href="index.html">Вернуться на главную</a></p>`;
   } else {
-    const artist = artists.find(a => a.name === artistName);
-    if (!artist) {
-      profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
-    } else {
-      profileDiv.innerHTML = `
-        <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
-          <img src="${artist.image}" alt="${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
-          <div class="artist-info">
-            <h1 class="artist-name">${artist.name}</h1>
-            ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-            <div class="buttons">
-              <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль ${artist.name}">Spotify</a>
-              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль ${artist.name}">Wikipedia</a>
-            </div>
-          </div>
-        </div>
-        <h2 class="songs-title">Песни:</h2>
-        <ul class="songs" id="song-list" role="list" aria-label="Список песен артиста">
-          ${artist.songs.map((s,i) => `<li tabindex="0" data-index="${i}" role="listitem">${s.title}</li>`).join('')}
-        </ul>
-        <div class="player" id="audio-player" aria-label="Аудиоплеер">
-          <button id="play-pause" aria-label="Воспроизвести">&#9658;</button>
-          <span class="time" id="current-time">00:00</span>
-          <input type="range" id="progress" value="0" min="0" max="100" step="1" aria-label="Прогресс воспроизведения" />
-          <span class="time" id="duration">00:00</span>
-        </div>
-        <section class="wiki-section" aria-live="polite" tabindex="0">
-          <h3>Описание из Википедии</h3>
-          <div id="wiki-content" class="loading">Загрузка...</div>
-        </section>
-      `;
+    artistImage.src = artistData.image;
+    artistImage.alt = `Фото ${artistData.name}`;
+    artistNameEl.textContent = artistData.name;
+    foreignAgentBadge.style.display = artistData.foreignAgent ? "inline-block" : "none";
+    spotifyLink.href = artistData.spotifyUrl;
+    wikipediaLink.href = artistData.wikiUrl;
 
-      fetchWikiExtract(artist.name).then(html => {
-        document.getElementById('wiki-content').innerHTML = html;
+    // Заполняем список песен
+    songsList.innerHTML = artistData.songs.map((song, index) => `
+      <li tabindex="0" role="button" aria-label="Воспроизвести песню ${song.title}" data-index="${index}">${song.title}</li>
+    `).join('');
+
+  }
+
+  btnBack.addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // Плеер
+  const audio = new Audio();
+  let currentSongIndex = 0;
+  const btnPlay = document.getElementById('btn-play');
+  const btnPause = document.getElementById('btn-pause');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const progress = document.getElementById('progress');
+  const progressContainer = document.getElementById('progress-container');
+  const currentTimeEl = document.getElementById('current-time');
+  const durationEl = document.getElementById('duration');
+
+  function loadSong(index) {
+    if (!artistData) return;
+    currentSongIndex = index;
+    audio.src = artistData.songs[index].url;
+    audio.load();
+    highlightActiveSong();
+    updateProgress(0);
+    currentTimeEl.textContent = "0:00";
+    durationEl.textContent = "–:–";
+    btnPlay.style.display = 'inline';
+    btnPause.style.display = 'none';
+  }
+
+  function highlightActiveSong() {
+    const items = songsList.querySelectorAll('li');
+    items.forEach((li, idx) => {
+      li.classList.toggle('active', idx === currentSongIndex);
+    });
+  }
+
+  btnPlay.addEventListener('click', () => {
+    audio.play();
+  });
+
+  btnPause.addEventListener('click', () => {
+    audio.pause();
+  });
+
+  btnPrev.addEventListener('click', () => {
+    currentSongIndex--;
+    if (currentSongIndex < 0) currentSongIndex = artistData.songs.length -1;
+    loadSong(currentSongIndex);
+    audio.play();
+  });
+
+  btnNext.addEventListener('click', () => {
+    currentSongIndex++;
+    if (currentSongIndex >= artistData.songs.length) currentSongIndex = 0;
+    loadSong(currentSongIndex);
+    audio.play();
+  });
+
+  audio.addEventListener('play', () => {
+    btnPlay.style.display = 'none';
+    btnPause.style.display = 'inline';
+  });
+
+  audio.addEventListener('pause', () => {
+    btnPlay.style.display = 'inline';
+    btnPause.style.display = 'none';
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const progressPercent = (audio.currentTime / audio.duration) * 100;
+    updateProgress(progressPercent);
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  function updateProgress(percent) {
+    progress.style.width = percent + '%';
+    progressContainer.setAttribute('aria-valuenow', Math.round(percent));
+  }
+
+  progressContainer.addEventListener('click', e => {
+    const rect = progressContainer.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const percent = clickX / width;
+    if (audio.duration) {
+      audio.currentTime = percent * audio.duration;
+    }
+  });
+
+  // Клавиатурное управление прогрессом
+  progressContainer.addEventListener('keydown', e => {
+    if (!audio.duration) return;
+    if (e.key === 'ArrowLeft') {
+      audio.currentTime = Math.max(0, audio.currentTime - 5);
+      e.preventDefault();
+    } else if (e.key === 'ArrowRight') {
+      audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+      e.preventDefault();
+    }
+  });
+
+  // Воспроизведение по клику на песню
+  songsList.addEventListener('click', e => {
+    const li = e.target.closest('li[data-index]');
+    if (li) {
+      loadSong(+li.getAttribute('data-index'));
+      audio.play();
+    }
+  });
+  songsList.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('li[data-index]')) {
+      e.preventDefault();
+      loadSong(+e.target.getAttribute('data-index'));
+      audio.play();
+    }
+  });
+
+  // Форматирование времени в мм:сс
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
+
+  // Загрузка описания с Википедии через API
+  const wikiDescEl = document.getElementById('wiki-description');
+  if (artistData) {
+    fetch(`https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(artistData.name)}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Не удалось загрузить описание");
+        return res.json();
+      })
+      .then(data => {
+        wikiDescEl.innerHTML = `<p>${data.extract}</p><p><a href="${artistData.wikiUrl}" target="_blank" rel="noopener noreferrer">Читать полностью на Википедии</a></p>`;
+      })
+      .catch(() => {
+        wikiDescEl.textContent = "Описание недоступно";
       });
+  }
 
-      const audio = new Audio();
-      let currentTrackIndex = 0;
-      const playPauseBtn = document.getElementById('play-pause');
-      const progress = document.getElementById('progress');
-      const currentTimeSpan = document.getElementById('current-time');
-      const durationSpan = document.getElementById('duration');
-      const songList = document.getElementById('song-list');
+  // Тема из localStorage (как и на главной)
+  function setTheme(theme) {
+    if(theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+  const savedTheme = localStorage.getItem('nikoTheme') || 'light';
+  setTheme(savedTheme);
 
-      function loadTrack(index) {
-        currentTrackIndex = index;
-        audio.src = artist.songs[index].src;
-        audio.load();
-        Array.from(songList.children).forEach(li => li.classList.remove('active'));
-        const activeLi = songList.querySelector(`li[data-index="${index}"]`);
-        if (activeLi) activeLi.classList.add('active');
-        playPauseBtn.innerHTML = "&#9658;"; // Play icon
-        currentTimeSpan.textContent = "00:00";
-       
+  // Загрузка первой песни
+  if (artistData) {
+    loadSong(0);
+  }
+</script>
+
+</body>
+</html>
