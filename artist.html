@@ -1,1 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Профиль артиста — NikoFlow</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to right, #111827, #1f2937);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .badge {
+      background-color: #dc2626;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 0.5rem;
+      user-select: none;
+    }
+    .btn-back {
+      background-color: #6b21a8;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      user-select: none;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+    .btn-back:hover {
+      background-color: #8b5cf6;
+    }
+    a.spotify {
+      background-color: #1db954;
+      padding: 0.7rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    a.spotify:hover {
+      background-color: #17a44c;
+    }
+    a.wikipedia {
+      background-color: #3366cc;
+      padding: 0.7rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    a.wikipedia:hover {
+      background-color: #254b9a;
+    }
+    h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+    ul.songs {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+    ul.songs li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    ul.songs li::before {
+      content: "🎵";
+      position: absolute;
+      left: 0;
+    }
+    .artist-image {
+      max-width: 320px;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.6);
+      margin-bottom: 1.5rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <button class="btn-back" onclick="history.back()">← Назад</button>
+
+    <div id="artist-profile" class="text-center">
+      <!-- Профиль артиста подгрузится сюда -->
+    </div>
+
+  </div>
+
+  <script>
+    // Данные артистов (тоже надо синхронизировать с index.html)
+    const artists = [
+      {
+        name: "Noize MC",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/320px-Noize_MC_2014.jpg",
+        songs: ["Вселенная бесконечна", "Выдыхай"],
+        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
+        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+        foreignAgent: true
+      },
+      {
+        name: "Монеточка",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Monetochka_2021.jpg/320px-Monetochka_2021.jpg",
+        songs: ["Каждый раз", "Нет монет"],
+        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+        foreignAgent: true
+      }
+    ];
+
+    // Функция для получения параметра из URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const artistName = getQueryParam('name');
+    const profileDiv = document.getElementById('artist-profile');
+
+    if (!artistName) {
+      profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+    } else {
+      const artist = artists.find(a => a.name === artistName);
+      if (!artist) {
+        profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
+      } else {
+        profileDiv.innerHTML = `
+          <img src="${artist.image}" alt="${artist.name}" class="artist-image" />
+          <h1>${artist.name}</h1>
+          ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+          <h2>Песни:</h2>
+          <ul class="songs">
+            ${artist.songs.map(song => `<li>${song}</li>`).join('')}
+          </ul>
+          <div style="margin-top: 2rem;">
+            <a href="${artist.spotify}" target="_blank" class="spotify">Spotify</a>
+            <a href="${artist.wikipedia}" target="_blank" class="wikipedia">Wikipedia</a>
+          </div>
+        `;
+      }
+    }
+  </script>
+
+</body>
+</html>
 
