@@ -2,64 +2,100 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NikoFlow</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
     body {
       background: linear-gradient(to right, #111827, #1f2937);
       color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .badge {
+      background-color: #dc2626;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .cursor-pointer {
+      cursor: pointer;
     }
   </style>
 </head>
 <body class="min-h-screen px-4 py-6">
 
   <!-- Название сайта -->
-  <header class="text-xl font-bold mb-8 text-gray-100">
-    <span class="text-purple-400">NikoFlow</span>
+  <header class="text-2xl font-bold mb-10 text-purple-300 tracking-wide">
+    NikoFlow
   </header>
 
   <!-- Контейнер артистов -->
-  <div id="artist-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <div id="artist-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
   <script>
     const artists = [
       {
-        name: "МакSим",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/MakSim_in_2021.jpg/320px-MakSim_in_2021.jpg",
-        songs: ["Знаешь ли ты", "Мой рай"],
-        spotify: "https://open.spotify.com/artist/5EDtlHHyBzF5DHiRGDL38j",
-        wikipedia: "https://ru.wikipedia.org/wiki/МакSим"
+        name: "Noize MC",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/320px-Noize_MC_2014.jpg",
+        songs: ["Вселенная бесконечна", "Выдыхай"],
+        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
+        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+        foreignAgent: true
       },
       {
-        name: "Оксимирон",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Oxxxymiron_2021.jpg/320px-Oxxxymiron_2021.jpg",
-        songs: ["Где нас нет", "Кто убил Марка?"],
-        spotify: "https://open.spotify.com/artist/1TtJ8j22Roc24e2Jx3OcU4",
-        wikipedia: "https://ru.wikipedia.org/wiki/Оксимирон"
+        name: "Монеточка",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Monetochka_2021.jpg/320px-Monetochka_2021.jpg",
+        songs: ["Каждый раз", "Нет монет"],
+        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+        foreignAgent: true
       }
     ];
 
     const container = document.getElementById("artist-list");
 
     artists.forEach((artist, i) => {
-      const el = document.createElement("div");
-      el.className = "bg-gray-800 p-4 rounded-2xl shadow-lg hover:scale-105 transition transform duration-300";
-      el.setAttribute("data-aos", "fade-up");
-      el.innerHTML = `
-        <img src="${artist.image}" alt="${artist.name}" class="rounded-xl w-full h-60 object-cover mb-4">
+      const card = document.createElement("div");
+      card.className = "bg-gray-800 p-5 rounded-2xl shadow-xl hover:shadow-purple-500/20 hover:scale-[1.02] transition transform duration-300 cursor-pointer";
+      card.setAttribute("data-aos", "fade-up");
+
+      // Основное содержимое карточки (картинка + имя)
+      card.innerHTML = `
+        <img src="${artist.image}" alt="${artist.name}" class="rounded-xl w-full h-60 object-cover mb-4 shadow-lg">
         <h2 class="text-2xl font-semibold mb-2">${artist.name}</h2>
-        <ul class="mb-3 text-sm text-gray-300">
-          ${artist.songs.map(song => `<li>🎵 ${song}</li>`).join("")}
-        </ul>
-        <div class="flex space-x-4">
-          <a href="${artist.spotify}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-xl text-sm">Spotify</a>
-          <a href="${artist.wikipedia}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Wikipedia</a>
+        <div class="badge-container mb-3"></div>
+        <div class="details hidden text-sm text-gray-300">
+          <ul>
+            ${artist.songs.map(song => `<li>🎵 ${song}</li>`).join("")}
+          </ul>
+          <div class="flex space-x-4 mt-3">
+            <a href="${artist.spotify}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-xl text-sm">Spotify</a>
+            <a href="${artist.wikipedia}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Wikipedia</a>
+          </div>
         </div>
       `;
-      container.appendChild(el);
+
+      // Добавляем метку "Признан иноагентом в РФ", если нужно
+      if (artist.foreignAgent) {
+        const badgeContainer = card.querySelector('.badge-container');
+        badgeContainer.innerHTML = `<div class="badge">Признан иноагентом в РФ</div>`;
+      }
+
+      // Обработчик клика: раскрыть/скрыть детали
+      card.addEventListener('click', () => {
+        const details = card.querySelector('.details');
+        if (details.classList.contains('hidden')) {
+          details.classList.remove('hidden');
+        } else {
+          details.classList.add('hidden');
+        }
+      });
+
+      container.appendChild(card);
     });
 
     AOS.init();
