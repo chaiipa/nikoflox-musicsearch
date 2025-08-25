@@ -2,104 +2,257 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Профиль артиста</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Профиль артиста — NikoFlow</title>
   <style>
+    :root {
+      --bg-dark: #121212;
+      --text-dark: #eee;
+      --primary: #7c3aed;
+      --primary-hover: #a78bfa;
+      --spotify-green: #1db954;
+      --wiki-blue: #3366cc;
+      --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
+    }
     body {
-      font-family: sans-serif;
-      background: #121212;
-      color: #fff;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
     }
-    .artist-profile {
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #1e1e1e;
-      border-radius: 20px;
-    }
-    .artist-profile img {
+    .container {
+      max-width: 900px;
       width: 100%;
-      border-radius: 20px;
+      animation: fadeInUp 0.7s ease forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    button.btn-back {
+      background-color: var(--primary);
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      user-select: none;
+      color: white;
+      border: none;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-glow);
+    }
+    button.btn-back:hover {
+      background-color: var(--primary-hover);
+      box-shadow: 0 0 20px rgba(167, 139, 250, 1);
+    }
+    .artist-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-glow);
+      user-select: none;
+    }
+    .artist-image {
+      width: 280px;
+      height: 280px;
+      border-radius: 1.5rem;
+      object-fit: cover;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+    .artist-image:hover {
+      transform: scale(1.05) rotate(3deg);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.9);
     }
     .artist-info {
-      padding-top: 20px;
+      flex: 1;
+      min-width: 220px;
+      user-select: text;
     }
-    .artist-info h1 {
-      margin: 0;
-      font-size: 32px;
+    .artist-name {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.4rem;
+      color: var(--primary);
     }
-    .artist-info p {
-      color: #ccc;
-    }
-    .links {
-      margin-top: 20px;
-    }
-    .links a {
+    .badge {
+      background-color: #dc2626;
+      padding: 0.4rem 0.8rem;
+      font-size: 1rem;
+      border-radius: 0.6rem;
+      font-weight: 700;
       display: inline-block;
-      margin-right: 10px;
-      text-decoration: none;
-      color: #1db954;
+      margin-bottom: 1rem;
+      user-select: none;
+      box-shadow: 0 0 12px #dc2626bb;
     }
-    .status {
-      margin-top: 10px;
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    a.spotify, a.wikipedia {
+      padding: 0.85rem 2.5rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      user-select: none;
+      font-size: 1.1rem;
+    }
+    a.spotify {
+      background-color: var(--spotify-green);
+      box-shadow: 0 0 15px #1db954cc;
+    }
+    a.spotify:hover {
+      background-color: #17a44c;
+      box-shadow: 0 0 25px #17a44ccc;
+    }
+    a.wikipedia {
+      background-color: var(--wiki-blue);
+      box-shadow: 0 0 15px #3366cccc;
+    }
+    a.wikipedia:hover {
+      background-color: #254b9a;
+      box-shadow: 0 0 25px #254b9acc;
+    }
+    .wiki-section {
+      margin-top: 3rem;
+      background: #222222bb;
+      padding: 1.7rem 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+      user-select: text;
+      max-width: 900px;
+      line-height: 1.6;
+      color: var(--text-dark);
+    }
+    .wiki-section h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      user-select: none;
+      color: var(--primary);
+      text-shadow: 0 0 5px var(--primary);
+    }
+    .loading {
+      color: #888;
       font-style: italic;
-      color: #ff5555;
+      margin-top: 1rem;
+      user-select: none;
+    }
+    @media (max-width: 640px) {
+      .artist-header { flex-direction: column; align-items: center; }
+      .artist-image { width: 220px; height: 220px; }
+      .artist-name { font-size: 2.4rem; text-align: center; }
     }
   </style>
 </head>
 <body>
-
-  <div class="artist-profile">
-    <img src="images/noize.jpg" alt="Noize MC">
-    <div class="artist-info">
-      <h1>Noize MC</h1>
-      <p>Российский музыкант, рэпер и рок-исполнитель.</p>
-      <div class="links">
-        <a href="https://ru.wikipedia.org/wiki/Noize_MC" target="_blank">Википедия</a>
-        <a href="https://open.spotify.com/artist/3CyZ5VUhxZ2fGTL0Eoz8q3" target="_blank">Spotify</a>
-      </div>
-      <div class="status">Признан иноагентом в РФ</div>
-    </div>
+  <div class="container">
+    <button class="btn-back" onclick="history.back()">← Назад</button>
+    <div id="artist-profile"></div>
   </div>
+  <script>
+    const artists = [
+      {
+        name: "Noize MC",
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
+        spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
+        wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+        foreignAgent: true
+      },
+      {
+        name: "Монеточка",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
+        spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+        wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+        foreignAgent: true
+      },
+      {
+        name: "Mzlff",
+        image: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/f2/1c/40/f21c40fe-c8c1-d861-2d51-9d8f30cfc2e4/cover.jpg/600x600bb.jpg",
+        spotify: "https://open.spotify.com/artist/3YbVsM4iCxWqWQyRtrBVA2",
+        wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
+        foreignAgent: false
+      },
+      {
+        name: "В Пряничном Домике",
+        image: "https://i1.sndcdn.com/avatars-fSvvS6s3biuNJJbz-6vFlkw-t500x500.jpg",
+        spotify: "https://open.spotify.com/artist/1uJIkSJekxMTIJhRZ9y6ZI",
+        wikipedia: "https://ru.wikipedia.org/wiki/В_Пряничном_Домике",
+        foreignAgent: false
+      }
+    ];
 
-  <div class="artist-profile">
-    <img src="images/monetochka.jpg" alt="Монеточка">
-    <div class="artist-info">
-      <h1>Монеточка</h1>
-      <p>Российская певица, автор песен.</p>
-      <div class="links">
-        <a href="https://ru.wikipedia.org/wiki/Монеточка" target="_blank">Википедия</a>
-        <a href="https://open.spotify.com/artist/0XvGc4aQ38OeVYfKP0fgDx" target="_blank">Spotify</a>
-      </div>
-      <div class="status">Признана иноагентом в РФ</div>
-    </div>
-  </div>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
-  <div class="artist-profile">
-    <img src="images/rukivverh.jpg" alt="Руки Вверх!">
-    <div class="artist-info">
-      <h1>Руки Вверх!</h1>
-      <p>Поп-группа из России, популярная в 90-х и 2000-х.</p>
-      <div class="links">
-        <a href="https://ru.wikipedia.org/wiki/Руки_Вверх!" target="_blank">Википедия</a>
-        <a href="https://open.spotify.com/artist/5PBP3dFW2iF8Zy6nKTC12k" target="_blank">Spotify</a>
-      </div>
-    </div>
-  </div>
+    async function fetchWikiExtract(title) {
+      const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error('Ошибка загрузки данных');
+        const data = await response.json();
+        return data.extract_html || data.extract || 'Описание не найдено.';
+      } catch (e) {
+        return '<p>Не удалось загрузить описание с Википедии.</p>';
+      }
+    }
 
-  <div class="artist-profile">
-    <img src="images/mzlff.jpg" alt="mzlff">
-    <div class="artist-info">
-      <h1>mzlff</h1>
-      <p>Российский инди-исполнитель, известен по треку «В пряничном домике».</p>
-      <div class="links">
-        <a href="https://ru.wikipedia.org/wiki/Mzlff" target="_blank">Википедия</a>
-        <a href="https://open.spotify.com/artist/0Z7xvQUa1WXEp3guI31nGf" target="_blank">Spotify</a>
-      </div>
-    </div>
-  </div>
+    const artistNameRaw = getQueryParam('name');
+    const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
+    const profileDiv = document.getElementById('artist-profile');
 
+    if (!artistName) {
+      profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+    } else {
+      const artist = artists.find(a => a.name === artistName);
+      if (!artist) {
+        profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
+      } else {
+        profileDiv.innerHTML = `
+          <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
+            <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
+            <div class="artist-info">
+              <h1 class="artist-name">${artist.name}</h1>
+              ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+              <div class="buttons">
+                <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify">Spotify</a>
+                <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia">Wikipedia</a>
+              </div>
+            </div>
+          </div>
+          <section class="wiki-section" aria-live="polite" tabindex="0">
+            <h3>Описание из Википедии</h3>
+            <div id="wiki-content" class="loading">Загрузка...</div>
+          </section>
+        `;
+        fetchWikiExtract(artist.name).then(html => {
+          document.getElementById('wiki-content').innerHTML = html;
+        });
+      }
+    }
+  </script>
 </body>
 </html>
