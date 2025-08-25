@@ -7,25 +7,19 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
     body {
-      background: linear-gradient(to right, #111827, #1f2937);
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #121212, #1f1f1f);
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
-      padding: 2rem;
+      padding: 2rem 1rem;
     }
-    .badge {
-      background-color: #dc2626;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.8rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      display: inline-block;
-      margin-top: 0.5rem;
-      user-select: none;
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
     }
     .btn-back {
-      background-color: #6b21a8;
-      padding: 0.5rem 1rem;
+      background-color: #7c3aed;
+      padding: 0.6rem 1.2rem;
       border-radius: 0.5rem;
       font-weight: 600;
       cursor: pointer;
@@ -33,41 +27,85 @@
       user-select: none;
       display: inline-block;
       margin-bottom: 2rem;
+      color: white;
+      border: none;
     }
     .btn-back:hover {
-      background-color: #8b5cf6;
+      background-color: #a78bfa;
+    }
+    .artist-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .artist-image {
+      width: 280px;
+      height: 280px;
+      border-radius: 1.5rem;
+      object-fit: cover;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+      flex-shrink: 0;
+    }
+    .artist-info {
+      flex: 1;
+      min-width: 200px;
+    }
+    .artist-name {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.4rem;
+      user-select: none;
+    }
+    .badge {
+      background-color: #dc2626;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.9rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
     a.spotify {
       background-color: #1db954;
-      padding: 0.7rem 1.5rem;
+      padding: 0.75rem 1.8rem;
       border-radius: 2rem;
       font-weight: 700;
       color: white;
       text-decoration: none;
       display: inline-block;
-      margin-right: 1rem;
       transition: background-color 0.3s ease;
+      user-select: none;
     }
     a.spotify:hover {
       background-color: #17a44c;
     }
     a.wikipedia {
       background-color: #3366cc;
-      padding: 0.7rem 1.5rem;
+      padding: 0.75rem 1.8rem;
       border-radius: 2rem;
       font-weight: 700;
       color: white;
       text-decoration: none;
       display: inline-block;
       transition: background-color 0.3s ease;
+      user-select: none;
     }
     a.wikipedia:hover {
       background-color: #254b9a;
     }
-    h1 {
-      font-size: 3rem;
-      font-weight: 900;
-      margin-bottom: 0.5rem;
+    h2.songs-title {
+      margin-top: 2rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      user-select: none;
     }
     ul.songs {
       list-style: none;
@@ -77,23 +115,48 @@
     }
     ul.songs li {
       margin-bottom: 0.5rem;
-      padding-left: 1.2rem;
+      padding-left: 1.4rem;
       position: relative;
+      user-select: none;
     }
     ul.songs li::before {
       content: "🎵";
       position: absolute;
       left: 0;
     }
-    .artist-image {
-      max-width: 320px;
+    .wiki-section {
+      margin-top: 3rem;
+      background: #222222bb;
+      padding: 1.5rem 2rem;
       border-radius: 1rem;
-      box-shadow: 0 8px 24px rgb(0 0 0 / 0.6);
-      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      user-select: text;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
+    .wiki-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      user-select: none;
+    }
+    .loading {
+      color: #aaa;
+      font-style: italic;
+      margin-top: 1rem;
+      user-select: none;
+    }
+    @media (max-width: 640px) {
+      .artist-header {
+        flex-direction: column;
+        align-items: center;
+      }
+      .artist-image {
+        width: 220px;
+        height: 220px;
+      }
+      .artist-name {
+        font-size: 2.2rem;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -103,8 +166,10 @@
 
     <button class="btn-back" onclick="history.back()">← Назад</button>
 
-    <div id="artist-profile" class="text-center">
-      <!-- Профиль артиста подгрузится сюда -->
+    <div id="artist-profile" class="">
+
+      <!-- Профиль артиста загрузится сюда -->
+
     </div>
 
   </div>
@@ -130,15 +195,27 @@
       }
     ];
 
-    // Получение параметра из URL
+    // Получить параметр из URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
+    // Функция для загрузки описания из Википедии через API
+    async function fetchWikiExtract(title) {
+      const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error('Ошибка загрузки данных');
+        const data = await response.json();
+        return data.extract_html || data.extract || 'Описание не найдено.';
+      } catch (e) {
+        return '<p>Не удалось загрузить описание с Википедии.</p>';
+      }
+    }
+
     const artistNameRaw = getQueryParam('name');
     const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
-    console.log("Ищем артиста:", artistName);
 
     const profileDiv = document.getElementById('artist-profile');
 
@@ -148,21 +225,36 @@
       const artist = artists.find(a => a.name === artistName);
       if (!artist) {
         profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
-        console.warn("Артист не найден:", artistName);
       } else {
+        // Показать базовый профиль
         profileDiv.innerHTML = `
-          <img src="${artist.image}" alt="${artist.name}" class="artist-image" />
-          <h1>${artist.name}</h1>
-          ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-          <h2>Песни:</h2>
+          <div class="artist-header">
+            <img src="${artist.image}" alt="${artist.name}" class="artist-image" />
+            <div class="artist-info">
+              <h1 class="artist-name">${artist.name}</h1>
+              ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+              <div class="buttons">
+                <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль">Spotify</a>
+                <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль">Wikipedia</a>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="songs-title">Песни:</h2>
           <ul class="songs">
             ${artist.songs.map(song => `<li>${song}</li>`).join('')}
           </ul>
-          <div style="margin-top: 2rem;">
-            <a href="${artist.spotify}" target="_blank" class="spotify">Spotify</a>
-            <a href="${artist.wikipedia}" target="_blank" class="wikipedia">Wikipedia</a>
-          </div>
+
+          <section class="wiki-section" aria-live="polite">
+            <h3>Описание из Википедии</h3>
+            <div id="wiki-content" class="loading">Загрузка...</div>
+          </section>
         `;
+
+        // Загрузить описание из Википедии
+        fetchWikiExtract(artist.name).then(html => {
+          document.getElementById('wiki-content').innerHTML = html;
+        });
       }
     }
   </script>
