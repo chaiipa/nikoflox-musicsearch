@@ -110,11 +110,11 @@
   </div>
 
   <script>
-    // Данные артистов (тоже надо синхронизировать с index.html)
+    // Данные артистов
     const artists = [
       {
         name: "Noize MC",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/320px-Noize_MC_2014.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
         songs: ["Вселенная бесконечна", "Выдыхай"],
         spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
         wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
@@ -122,7 +122,7 @@
       },
       {
         name: "Монеточка",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Monetochka_2021.jpg/320px-Monetochka_2021.jpg",
+        image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
         songs: ["Каждый раз", "Нет монет"],
         spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
         wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
@@ -130,13 +130,16 @@
       }
     ];
 
-    // Функция для получения параметра из URL
+    // Получение параметра из URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    const artistName = getQueryParam('name');
+    const artistNameRaw = getQueryParam('name');
+    const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
+    console.log("Ищем артиста:", artistName);
+
     const profileDiv = document.getElementById('artist-profile');
 
     if (!artistName) {
@@ -145,6 +148,7 @@
       const artist = artists.find(a => a.name === artistName);
       if (!artist) {
         profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
+        console.warn("Артист не найден:", artistName);
       } else {
         profileDiv.innerHTML = `
           <img src="${artist.image}" alt="${artist.name}" class="artist-image" />
@@ -165,4 +169,3 @@
 
 </body>
 </html>
-
