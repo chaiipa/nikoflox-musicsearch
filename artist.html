@@ -1,224 +1,286 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Профиль артиста — NikoFlow</title>
-  <style>
-    :root {
-      --bg-light: #fefefe;
-      --text-light: #222;
-      --bg-dark: #121212;
-      --text-dark: #eee;
-      --primary: #7c3aed;
-      --spotify-green: #1db954;
-      --wiki-blue: #3366cc;
-      --red-badge: #dc2626;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Профиль артиста — NikoFlow</title>
+<style>
+  :root {
+    --bg-light: #fefefe;
+    --text-light: #222;
+    --bg-dark: #121212;
+    --text-dark: #eee;
+    --primary: #7c3aed;
+    --primary-hover: #a78bfa;
+    --spotify-green: #1db954;
+    --wiki-blue: #3366cc;
+    --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  .container {
+    max-width: 900px;
+    width: 100%;
+    animation: fadeInUp 0.7s ease forwards;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
-    body {
-      margin: 0; padding: 1rem;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s, color 0.3s;
-      min-height: 100vh;
-      display: flex;
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  button.btn-back {
+    background-color: var(--primary);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+    color: white;
+    border: none;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-glow);
+  }
+  button.btn-back:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 1);
+  }
+  .artist-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-glow);
+    user-select: none;
+  }
+  .artist-image {
+    width: 280px;
+    height: 280px;
+    border-radius: 1.5rem;
+    object-fit: cover;
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .artist-image:hover {
+    transform: scale(1.05) rotate(3deg);
+    box-shadow: 0 12px 40px rgba(124, 58, 237, 0.9);
+  }
+  .artist-info {
+    flex: 1;
+    min-width: 220px;
+    user-select: text;
+  }
+  .artist-name {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 0.4rem;
+    color: var(--primary);
+  }
+  .badge {
+    background-color: #dc2626;
+    padding: 0.4rem 0.8rem;
+    font-size: 1rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+    user-select: none;
+    box-shadow: 0 0 12px #dc2626bb;
+  }
+  .buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  a.spotify, a.wikipedia {
+    padding: 0.85rem 2.5rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    user-select: none;
+    font-size: 1.1rem;
+  }
+  a.spotify {
+    background-color: var(--spotify-green);
+    box-shadow: 0 0 15px #1db954cc;
+  }
+  a.spotify:hover {
+    background-color: #17a44c;
+    box-shadow: 0 0 25px #17a44ccc;
+  }
+  a.wikipedia {
+    background-color: var(--wiki-blue);
+    box-shadow: 0 0 15px #3366cccc;
+  }
+  a.wikipedia:hover {
+    background-color: #254b9a;
+    box-shadow: 0 0 25px #254b9acc;
+  }
+  .wiki-section {
+    margin-top: 3rem;
+    background: #f3f3f3;
+    padding: 1.7rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+    user-select: text;
+    max-width: 900px;
+    line-height: 1.6;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  body.dark .wiki-section {
+    background: #222222bb;
+    color: var(--text-dark);
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+  }
+  .wiki-section h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    user-select: none;
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary);
+  }
+  .loading {
+    color: #888;
+    font-style: italic;
+    margin-top: 1rem;
+    user-select: none;
+  }
+  @media (max-width: 640px) {
+    .artist-header {
       flex-direction: column;
       align-items: center;
     }
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
+    .artist-image {
+      width: 220px;
+      height: 220px;
     }
-    .container {
-      max-width: 900px;
-      width: 100%;
+    .artist-name {
+      font-size: 2.4rem;
       text-align: center;
     }
-    h1 {
-      font-size: 3rem;
-      font-weight: 900;
-      color: var(--primary);
-      margin-bottom: 0.3rem;
-      user-select: none;
-    }
-    .badge {
-      display: none;
-      background-color: var(--red-badge);
-      color: white;
-      font-weight: 700;
-      border-radius: 1rem;
-      padding: 0.3rem 0.7rem;
-      user-select: none;
-      margin-bottom: 1rem;
-      display: inline-block;
-    }
-    img.artist-image {
-      width: 280px;
-      height: 280px;
-      object-fit: cover;
-      border-radius: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
-      user-select: none;
-    }
-    .links a {
-      display: inline-block;
-      margin: 0 1rem;
-      padding: 0.8rem 2rem;
-      border-radius: 2rem;
-      color: white;
-      font-weight: 700;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    a.spotify {
-      background-color: var(--spotify-green);
-      box-shadow: 0 0 15px #1db954cc;
-    }
-    a.spotify:hover {
-      background-color: #17a44c;
-      box-shadow: 0 0 25px #17a44ccc;
-    }
-    a.wikipedia {
-      background-color: var(--wiki-blue);
-      box-shadow: 0 0 15px #3366cccc;
-    }
-    a.wikipedia:hover {
-      background-color: #254b9a;
-      box-shadow: 0 0 25px #254b9acc;
-    }
-    #description {
-      margin-top: 2rem;
-      line-height: 1.6;
-      font-size: 1.1rem;
-      max-width: 800px;
-      user-select: text;
-    }
-    .theme-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.5rem 1rem;
-      border-radius: 1rem;
-      background: var(--primary);
-      color: white;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      user-select: none;
-      z-index: 10000;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <button class="theme-toggle" id="theme-toggle">Тёмная тема</button>
-  <div class="container" role="main" aria-live="polite">
-    <button onclick="history.back()" style="margin-bottom:1rem; cursor:pointer;">← Назад</button>
-    <h1 id="artist-name">Загрузка...</h1>
-    <div class="badge" id="foreign-agent-badge">Признан иноагентом в РФ</div>
-    <img src="" alt="Фото артиста" class="artist-image" id="artist-image" />
-    <div class="links">
-      <a href="#" target="_blank" rel="noopener" id="spotify-link" class="spotify">Spotify</a>
-      <a href="#" target="_blank" rel="noopener" id="wiki-link" class="wikipedia">Википедия</a>
-    </div>
-    <div id="description">Загрузка описания...</div>
-  </div>
 
-  <script>
-    const foreignAgents = [
-      "Noize MC",
-      "Монеточка",
-      // Добавь сюда артистов, которым показывать бейдж
-    ];
+<div class="container">
 
-    // Получаем имя артиста из URL
-    const params = new URLSearchParams(window.location.search);
-    let artistName = params.get('name') || '';
+  <button class="btn-back" onclick="history.back()">← Назад</button>
 
-    if (!artistName) {
-      document.getElementById('artist-name').textContent = 'Артист не указан';
-      document.getElementById('description').textContent = '';
+  <div id="artist-profile"></div>
+
+</div>
+
+<script>
+  const artists = [
+    {
+      name: "Noize MC",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Noize_MC_2014.jpg/600px-Noize_MC_2014.jpg",
+      spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaESz",
+      wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
+      foreignAgent: true
+    },
+    {
+      name: "Монеточка",
+      image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
+      spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
+      wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
+      foreignAgent: true
+    },
+    {
+      name: "Другой Артист",
+      image: "https://via.placeholder.com/280x280?text=Другой+Артист",
+      spotify: "https://open.spotify.com",
+      wikipedia: "https://ru.wikipedia.org",
+      foreignAgent: false
+    }
+  ];
+
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  async function fetchWikiExtract(title) {
+    const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error('Ошибка загрузки данных');
+      const data = await response.json();
+      return data.extract_html || data.extract || 'Описание не найдено.';
+    } catch (e) {
+      return '<p>Не удалось загрузить описание с Википедии.</p>';
+    }
+  }
+
+  const artistNameRaw = getQueryParam('name');
+  const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
+  const profileDiv = document.getElementById('artist-profile');
+
+  if (!artistName) {
+    profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+  } else {
+    const artist = artists.find(a => a.name === artistName);
+    if (!artist) {
+      profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
     } else {
-      artistName = decodeURIComponent(artistName);
+      profileDiv.innerHTML = `
+        <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
+          <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
+          <div class="artist-info">
+            <h1 class="artist-name">${artist.name}</h1>
+            ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+            <div class="buttons">
+              <a href="${artist.spotify}" target="_blank" rel="noopener" class="spotify" aria-label="Spotify профиль ${artist.name}">Spotify</a>
+              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="wikipedia" aria-label="Википедия профиль ${artist.name}">Wikipedia</a>
+            </div>
+          </div>
+        </div>
+        <section class="wiki-section" aria-live="polite" tabindex="0">
+          <h3>Описание из Википедии</h3>
+          <div id="wiki-content" class="loading">Загрузка...</div>
+        </section>
+      `;
 
-      // Показываем имя
-      document.getElementById('artist-name').textContent = artistName;
-
-      // Показать бейдж, если артист в списке иноагентов
-      const badge = document.getElementById('foreign-agent-badge');
-      if (foreignAgents.includes(artistName)) {
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
-      }
-
-      // Формируем ссылку на Spotify (через поиск)
-      const spotifySearchUrl = `https://open.spotify.com/search/${encodeURIComponent(artistName)}`;
-      const spotifyLink = document.getElementById('spotify-link');
-      spotifyLink.href = spotifySearchUrl;
-      spotifyLink.setAttribute('aria-label', `Spotify поиск по артисту ${artistName}`);
-
-      // Ссылка на русскую Википедию
-      const wikiUrl = `https://ru.wikipedia.org/wiki/${encodeURIComponent(artistName)}`;
-      const wikiLink = document.getElementById('wiki-link');
-      wikiLink.href = wikiUrl;
-      wikiLink.setAttribute('aria-label', `Википедия - страница артиста ${artistName}`);
-
-      // Загрузка описания из Википедии (API)
-      async function fetchWikiSummary(name) {
-        const descElem = document.getElementById('description');
-        descElem.textContent = 'Загрузка описания...';
-        try {
-          const apiUrl = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`;
-          const response = await fetch(apiUrl);
-          if (!response.ok) throw new Error('Страница не найдена');
-          const data = await response.json();
-          if (data.extract) {
-            descElem.textContent = data.extract;
-            // Подставим изображение, если есть
-            if(data.thumbnail && data.thumbnail.source){
-              document.getElementById('artist-image').src = data.thumbnail.source;
-              document.getElementById('artist-image').alt = `Фото ${artistName}`;
-            } else {
-              // Если изображения нет, поставим заглушку
-              document.getElementById('artist-image').src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
-              document.getElementById('artist-image').alt = 'Фото недоступно';
-            }
-          } else {
-            descElem.textContent = 'Описание отсутствует.';
-            document.getElementById('artist-image').src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
-            document.getElementById('artist-image').alt = 'Фото недоступно';
-          }
-        } catch {
-          descElem.textContent = 'Не удалось загрузить описание.';
-          document.getElementById('artist-image').src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg';
-          document.getElementById('artist-image').alt = 'Фото недоступно';
-        }
-      }
-      fetchWikiSummary(artistName);
+      fetchWikiExtract(artist.name).then(html => {
+        document.getElementById('wiki-content').innerHTML = html;
+      });
     }
+  }
+</script>
 
-    // Тёмная тема (сохраняется)
-    const themeToggle = document.getElementById('theme-toggle');
-    function setTheme(theme) {
-      if (theme === 'dark') {
-        document.body.classList.add('dark');
-        themeToggle.textContent = 'Светлая тема';
-        localStorage.setItem('nikoTheme', 'dark');
-      } else {
-        document.body.classList.remove('dark');
-        themeToggle.textContent = 'Тёмная тема';
-        localStorage.setItem('nikoTheme', 'light');
-      }
-    }
-    const savedTheme = localStorage.getItem('nikoTheme') || 'light';
-    setTheme(savedTheme);
-    themeToggle.addEventListener('click', () => {
-      const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
-      setTheme(newTheme);
-    });
-  </script>
 </body>
 </html>
