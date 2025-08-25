@@ -5,13 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NikoFlow</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <style>
     body {
       background: linear-gradient(to right, #111827, #1f2937);
       color: white;
       font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      background-color: #1f2937;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 36px rgb(147 51 234 / 0.7);
     }
     .badge {
       background-color: #dc2626;
@@ -20,21 +29,19 @@
       border-radius: 0.5rem;
       display: inline-block;
       margin-bottom: 0.5rem;
-    }
-    .cursor-pointer {
-      cursor: pointer;
+      font-weight: 600;
     }
   </style>
 </head>
-<body class="min-h-screen px-4 py-6">
+<body class="min-h-screen px-6 py-8">
 
-  <!-- Название сайта -->
-  <header class="text-2xl font-bold mb-10 text-purple-300 tracking-wide">
+  <header class="text-3xl font-bold mb-12 text-purple-400 tracking-wide select-none">
     NikoFlow
   </header>
 
-  <!-- Контейнер артистов -->
-  <div id="artist-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+    <!-- Артисты сюда добавятся -->
+  </main>
 
   <script>
     const artists = [
@@ -56,51 +63,28 @@
       }
     ];
 
-    const container = document.getElementById("artist-list");
+    const main = document.querySelector('main');
 
-    artists.forEach((artist, i) => {
-      const card = document.createElement("div");
-      card.className = "bg-gray-800 p-5 rounded-2xl shadow-xl hover:shadow-purple-500/20 hover:scale-[1.02] transition transform duration-300 cursor-pointer";
-      card.setAttribute("data-aos", "fade-up");
-
-      // Основное содержимое карточки (картинка + имя)
+    artists.forEach(artist => {
+      const card = document.createElement('div');
+      card.className = 'card p-5 cursor-pointer flex flex-col items-center text-center';
       card.innerHTML = `
-        <img src="${artist.image}" alt="${artist.name}" class="rounded-xl w-full h-60 object-cover mb-4 shadow-lg">
+        <img src="${artist.image}" alt="${artist.name}" class="rounded-2xl w-full h-64 object-cover mb-6 shadow-lg" />
         <h2 class="text-2xl font-semibold mb-2">${artist.name}</h2>
-        <div class="badge-container mb-3"></div>
-        <div class="details hidden text-sm text-gray-300">
-          <ul>
-            ${artist.songs.map(song => `<li>🎵 ${song}</li>`).join("")}
-          </ul>
-          <div class="flex space-x-4 mt-3">
-            <a href="${artist.spotify}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-xl text-sm">Spotify</a>
-            <a href="${artist.wikipedia}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Wikipedia</a>
-          </div>
-        </div>
+        ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
       `;
 
-      // Добавляем метку "Признан иноагентом в РФ", если нужно
-      if (artist.foreignAgent) {
-        const badgeContainer = card.querySelector('.badge-container');
-        badgeContainer.innerHTML = `<div class="badge">Признан иноагентом в РФ</div>`;
-      }
-
-      // Обработчик клика: раскрыть/скрыть детали
+      // При клике идём на artist.html с именем артиста в параметре
       card.addEventListener('click', () => {
-        const details = card.querySelector('.details');
-        if (details.classList.contains('hidden')) {
-          details.classList.remove('hidden');
-        } else {
-          details.classList.add('hidden');
-        }
+        const encodedName = encodeURIComponent(artist.name);
+        window.location.href = `artist.html?name=${encodedName}`;
       });
 
-      container.appendChild(card);
+      main.appendChild(card);
     });
-
-    AOS.init();
   </script>
 
 </body>
 </html>
+
 
