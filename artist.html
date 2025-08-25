@@ -4,34 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Профиль артиста — NikoFlow</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
+    :root {
+      --bg-light: #fefefe;
+      --text-light: #222;
+      --bg-dark: #121212;
+      --text-dark: #eee;
+      --primary: #7c3aed;
+      --primary-hover: #a78bfa;
+      --spotify-green: #1db954;
+      --wiki-blue: #3366cc;
+    }
     body {
-      background: linear-gradient(to right, #121212, #1f1f1f);
-      color: #eee;
+      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
       min-height: 100vh;
-      padding: 2rem 1rem;
+      padding: 1rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
     }
     .container {
       max-width: 900px;
-      margin: 0 auto;
+      width: 100%;
     }
-    .btn-back {
-      background-color: #7c3aed;
+    button.btn-back {
+      background-color: var(--primary);
       padding: 0.6rem 1.2rem;
       border-radius: 0.5rem;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.25s ease;
       user-select: none;
-      display: inline-block;
-      margin-bottom: 2rem;
       color: white;
       border: none;
+      margin-bottom: 1.5rem;
     }
-    .btn-back:hover {
-      background-color: #a78bfa;
+    button.btn-back:hover {
+      background-color: var(--primary-hover);
     }
     .artist-header {
       display: flex;
@@ -39,6 +57,7 @@
       align-items: center;
       gap: 2rem;
       margin-bottom: 2rem;
+      justify-content: center;
     }
     .artist-image {
       width: 280px;
@@ -47,6 +66,7 @@
       object-fit: cover;
       box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
       flex-shrink: 0;
+      user-select: none;
     }
     .artist-info {
       flex: 1;
@@ -74,7 +94,7 @@
       flex-wrap: wrap;
     }
     a.spotify {
-      background-color: #1db954;
+      background-color: var(--spotify-green);
       padding: 0.75rem 1.8rem;
       border-radius: 2rem;
       font-weight: 700;
@@ -88,7 +108,7 @@
       background-color: #17a44c;
     }
     a.wikipedia {
-      background-color: #3366cc;
+      background-color: var(--wiki-blue);
       padding: 0.75rem 1.8rem;
       border-radius: 2rem;
       font-weight: 700;
@@ -144,6 +164,90 @@
       margin-top: 1rem;
       user-select: none;
     }
+    /* Аудиоплеер стили */
+    .player {
+      margin-top: 2rem;
+      background: #333;
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      user-select: none;
+    }
+    .player.dark {
+      background: #444;
+    }
+    .player button {
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      color: white;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.25s;
+    }
+    .player button:hover {
+      background: var(--primary-hover);
+    }
+    .player .time {
+      color: #ccc;
+      font-family: monospace;
+      font-size: 0.9rem;
+      min-width: 80px;
+      user-select: none;
+    }
+    .player input[type="range"] {
+      flex: 1;
+      cursor: pointer;
+      border-radius: 5px;
+      height: 5px;
+      background: #555;
+      -webkit-appearance: none;
+    }
+    .player input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.25s;
+    }
+    .player input[type="range"]:hover::-webkit-slider-thumb {
+      background: var(--primary-hover);
+    }
+    .playlist {
+      margin-top: 2rem;
+      user-select: none;
+    }
+    .playlist-item {
+      padding: 0.5rem 1rem;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    body.dark .playlist-item {
+      color: var(--text-dark);
+    }
+    .playlist-item:hover {
+      background-color: var(--primary-hover);
+      color: white;
+    }
+    .playlist-item.active {
+      background-color: var(--primary);
+      color: white;
+      pointer-events: none;
+    }
     @media (max-width: 640px) {
       .artist-header {
         flex-direction: column;
@@ -157,6 +261,13 @@
         font-size: 2.2rem;
         text-align: center;
       }
+      .player {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .player input[type="range"] {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -166,21 +277,19 @@
 
     <button class="btn-back" onclick="history.back()">← Назад</button>
 
-    <div id="artist-profile" class="">
-
-      <!-- Профиль артиста загрузится сюда -->
-
-    </div>
+    <div id="artist-profile"></div>
 
   </div>
 
   <script>
-    // Данные артистов
     const artists = [
       {
         name: "Noize MC",
         image: "https://upload.wikimedia.org/wikipedia/commons/3/38/Noize_MC_2014.jpg",
-        songs: ["Вселенная бесконечна", "Выдыхай"],
+        songs: [
+          { title: "Вселенная бесконечна", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Вселенная_бесконечна.mp3" },
+          { title: "Выдыхай", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/NoizeMC_-_Выдыхай.mp3" }
+        ],
         spotify: "https://open.spotify.com/artist/6PoSJbLrCuQ4gTWDNaBESz",
         wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
         foreignAgent: true
@@ -188,20 +297,21 @@
       {
         name: "Монеточка",
         image: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Monetochka_2021.jpg",
-        songs: ["Каждый раз", "Нет монет"],
+        songs: [
+          { title: "Каждый раз", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Каждый_раз.mp3" },
+          { title: "Нет монет", src: "https://cdn.jsdelivr.net/gh/freecodecamp/cdn@main/music/Monetochka_-_Нет_монет.mp3" }
+        ],
         spotify: "https://open.spotify.com/artist/2nlfoOBzJ2fD2bnz1WylkI",
         wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
         foreignAgent: true
       }
     ];
 
-    // Получить параметр из URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    // Функция для загрузки описания из Википедии через API
     async function fetchWikiExtract(title) {
       const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
       try {
@@ -214,9 +324,15 @@
       }
     }
 
+    // Формат времени (сек -> mm:ss)
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
     const artistNameRaw = getQueryParam('name');
     const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
-
     const profileDiv = document.getElementById('artist-profile');
 
     if (!artistName) {
@@ -226,7 +342,6 @@
       if (!artist) {
         profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
       } else {
-        // Показать базовый профиль
         profileDiv.innerHTML = `
           <div class="artist-header">
             <img src="${artist.image}" alt="${artist.name}" class="artist-image" />
@@ -239,22 +354,113 @@
               </div>
             </div>
           </div>
-
           <h2 class="songs-title">Песни:</h2>
-          <ul class="songs">
-            ${artist.songs.map(song => `<li>${song}</li>`).join('')}
+          <ul class="songs" id="song-list">
+            ${artist.songs.map((s,i) => `<li data-index="${i}">${s.title}</li>`).join('')}
           </ul>
-
+          <div class="player" id="audio-player" aria-label="Аудиоплеер">
+            <button id="play-pause" aria-label="Воспроизвести">&#9658;</button>
+            <span class="time" id="current-time">00:00</span>
+            <input type="range" id="progress" value="0" min="0" max="100" step="1" aria-label="Прогресс воспроизведения" />
+            <span class="time" id="duration">00:00</span>
+          </div>
           <section class="wiki-section" aria-live="polite">
             <h3>Описание из Википедии</h3>
             <div id="wiki-content" class="loading">Загрузка...</div>
           </section>
         `;
 
-        // Загрузить описание из Википедии
+        // Подгружаем описание
         fetchWikiExtract(artist.name).then(html => {
           document.getElementById('wiki-content').innerHTML = html;
         });
+
+        // Аудиоплеер логика
+        const audio = new Audio();
+        let currentTrackIndex = 0;
+        const playPauseBtn = document.getElementById('play-pause');
+        const progress = document.getElementById('progress');
+        const currentTimeSpan = document.getElementById('current-time');
+        const durationSpan = document.getElementById('duration');
+        const songList = document.getElementById('song-list');
+        const playerDiv = document.getElementById('audio-player');
+
+        function loadTrack(index) {
+          currentTrackIndex = index;
+          audio.src = artist.songs[index].src;
+          audio.load();
+          // Выделяем активный трек
+          Array.from(songList.children).forEach(li => {
+            li.classList.remove('active');
+          });
+          const activeLi = songList.querySelector(`li[data-index="${index}"]`);
+          if (activeLi) activeLi.classList.add('active');
+          playPauseBtn.innerHTML = "&#9658;"; // Кнопка в Play
+          currentTimeSpan.textContent = "00:00";
+          durationSpan.textContent = "00:00";
+          progress.value = 0;
+        }
+
+        loadTrack(currentTrackIndex);
+
+        playPauseBtn.addEventListener('click', () => {
+          if (audio.paused) {
+            audio.play();
+            playPauseBtn.innerHTML = "&#10073;&#10073;"; // Pause
+          } else {
+            audio.pause();
+            playPauseBtn.innerHTML = "&#9658;"; // Play
+          }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+          durationSpan.textContent = formatTime(audio.duration);
+          progress.max = Math.floor(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+          progress.value = Math.floor(audio.currentTime);
+          currentTimeSpan.textContent = formatTime(audio.currentTime);
+        });
+
+        progress.addEventListener('input', () => {
+          audio.currentTime = progress.value;
+        });
+
+        // Клик по песне — проигрываем её
+        songList.addEventListener('click', e => {
+          if (e.target.tagName.toLowerCase() === 'li') {
+            const idx = +e.target.getAttribute('data-index');
+            if (idx !== currentTrackIndex) {
+              loadTrack(idx);
+            }
+            audio.play();
+            playPauseBtn.innerHTML = "&#10073;&#10073;";
+          }
+        });
+
+        // По окончании песни — переключаем на следующую, если есть
+        audio.addEventListener('ended', () => {
+          if (currentTrackIndex < artist.songs.length -1) {
+            loadTrack(currentTrackIndex + 1);
+            audio.play();
+            playPauseBtn.innerHTML = "&#10073;&#10073;";
+          } else {
+            playPauseBtn.innerHTML = "&#9658;";
+          }
+        });
+
+        // Переключатель темы - синхронизируем с index.html
+        function setTheme(theme) {
+          if (theme === 'dark') {
+            document.body.classList.add('dark');
+          } else {
+            document.body.classList.remove('dark');
+          }
+        }
+        // Читаем из localStorage и ставим тему
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
       }
     }
   </script>
