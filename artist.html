@@ -7,7 +7,7 @@
 <style>
   :root {
     --bg-dark: #121212;
-    --text-light: #eee;
+    --text-dark: #eee;
     --primary: #7c3aed;
     --primary-hover: #a78bfa;
     --spotify-green: #1db954;
@@ -15,92 +15,89 @@
     --youtube-red: #ff0000;
     --wiki-blue: #3366cc;
     --shadow-glow: 0 0 10px rgba(124, 58, 237, 0.8);
-    --btn-radius: 1.2rem;
-    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-
   body {
-    margin: 0; 
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-dark);
-    color: var(--text-light);
-    font-family: var(--font-main);
+    color: var(--text-dark);
     min-height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1rem;
+    overflow-x: hidden;
   }
-
   .container {
     max-width: 900px;
     width: 100%;
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.7s ease forwards;
   }
-
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px);}
-    to { opacity: 1; transform: translateY(0);}
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-
   button.btn-back {
     background-color: var(--primary);
-    border: none;
-    border-radius: var(--btn-radius);
-    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
     font-weight: 600;
-    padding: 0.7rem 1.5rem;
     cursor: pointer;
-    box-shadow: var(--shadow-glow);
-    margin-bottom: 1.5rem;
+    transition: background-color 0.25s ease;
     user-select: none;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    border: none;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-glow);
   }
-
   button.btn-back:hover {
     background-color: var(--primary-hover);
-    box-shadow: 0 0 20px var(--primary-hover);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 1);
   }
-
   .artist-header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 2rem;
+    margin-bottom: 2rem;
+    justify-content: center;
     background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
     border-radius: 1.5rem;
     padding: 1.5rem;
     box-shadow: var(--shadow-glow);
     user-select: none;
-    justify-content: center;
   }
-
   .artist-image {
     width: 280px;
     height: 280px;
     border-radius: 1.5rem;
     object-fit: cover;
     box-shadow: 0 8px 32px rgba(124, 58, 237, 0.7);
+    flex-shrink: 0;
     transition: transform 0.3s ease;
   }
-
   .artist-image:hover {
     transform: scale(1.05) rotate(3deg);
     box-shadow: 0 12px 40px rgba(124, 58, 237, 0.9);
   }
-
   .artist-info {
     flex: 1;
     min-width: 220px;
     user-select: text;
   }
-
   .artist-name {
     font-size: 3rem;
     font-weight: 900;
     margin-bottom: 0.4rem;
     color: var(--primary);
   }
-
   .badge {
     background-color: #dc2626;
     padding: 0.4rem 0.8rem;
@@ -109,15 +106,14 @@
     font-weight: 700;
     display: inline-block;
     margin-bottom: 1rem;
+    user-select: none;
     box-shadow: 0 0 12px #dc2626bb;
   }
-
   .buttons {
     display: flex;
-    flex-wrap: wrap;
     gap: 1rem;
+    flex-wrap: wrap;
   }
-
   a.btn-link {
     display: inline-flex;
     align-items: center;
@@ -128,62 +124,78 @@
     color: white;
     text-decoration: none;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-size: 1.1rem;
     user-select: none;
+    font-size: 1.1rem;
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   }
-
   a.btn-link svg {
     fill: white;
     width: 20px;
     height: 20px;
   }
-
   a.btn-link:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.35);
   }
-
-  a.spotify { background-color: var(--spotify-green); box-shadow: 0 0 15px #1db954cc;}
-  a.spotify:hover { background-color: #17a44c; box-shadow: 0 0 25px #17a44ccc;}
-
-  a.yandex { background-color: var(--yandex-yellow); color: #222; box-shadow: 0 0 15px #ffcc00cc;}
-  a.yandex:hover { background-color: #e6b800; color: #111; box-shadow: 0 0 25px #e6b800cc;}
-
-  a.youtube { background-color: var(--youtube-red); box-shadow: 0 0 15px #ff0000cc;}
-  a.youtube:hover { background-color: #cc0000; box-shadow: 0 0 25px #cc0000cc;}
-
-  a.wikipedia { background-color: var(--wiki-blue); box-shadow: 0 0 15px #3366cccc;}
-  a.wikipedia:hover { background-color: #254b9a; box-shadow: 0 0 25px #254b9acc;}
-
+  a.spotify {
+    background-color: var(--spotify-green);
+    box-shadow: 0 0 15px #1db954cc;
+  }
+  a.spotify:hover {
+    background-color: #17a44c;
+    box-shadow: 0 0 25px #17a44ccc;
+  }
+  a.yandex {
+    background-color: var(--yandex-yellow);
+    color: #222;
+    box-shadow: 0 0 15px #ffcc00cc;
+  }
+  a.yandex:hover {
+    background-color: #e6b800;
+    box-shadow: 0 0 25px #e6b800cc;
+    color: #111;
+  }
+  a.youtube {
+    background-color: var(--youtube-red);
+    box-shadow: 0 0 15px #ff0000cc;
+  }
+  a.youtube:hover {
+    background-color: #cc0000;
+    box-shadow: 0 0 25px #cc0000cc;
+  }
+  a.wikipedia {
+    background-color: var(--wiki-blue);
+    box-shadow: 0 0 15px #3366cccc;
+  }
+  a.wikipedia:hover {
+    background-color: #254b9a;
+    box-shadow: 0 0 25px #254b9acc;
+  }
   .wiki-section {
     margin-top: 3rem;
     background: #222222bb;
     padding: 1.7rem 2rem;
     border-radius: 1.5rem;
     box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+    user-select: text;
     max-width: 900px;
     line-height: 1.6;
-    color: var(--text-light);
-    user-select: text;
+    color: var(--text-dark);
   }
-
   .wiki-section h3 {
     font-size: 1.6rem;
     margin-bottom: 1rem;
     font-weight: 700;
+    user-select: none;
     color: var(--primary);
     text-shadow: 0 0 5px var(--primary);
-    user-select: none;
   }
-
   .loading {
     color: #888;
     font-style: italic;
     margin-top: 1rem;
     user-select: none;
   }
-
   .concert-banner {
     margin: 2rem 0 1rem 0;
     padding: 1rem 1.5rem;
@@ -196,18 +208,16 @@
     box-shadow: var(--shadow-glow);
     user-select: none;
   }
-
   .facts-section {
     margin: 1rem 0 3rem 0;
     background: #222222bb;
     padding: 1rem 1.5rem;
     border-radius: 1rem;
-    color: var(--text-light);
+    color: var(--text-dark);
     box-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
     max-width: 900px;
     user-select: text;
   }
-
   @media (max-width: 640px) {
     .artist-header {
       flex-direction: column;
@@ -288,6 +298,7 @@
     }
   ];
 
+  // Примеры интересных фактов для каждого артиста:
   const artistFacts = {
     "Монеточка": [
       "Настоящее имя — Екатерина Николаевна Шурова.",
@@ -311,22 +322,24 @@
     ]
   };
 
+  // Пример баннера афиши (просто текст, можно потом заменить iframe/ссылкой)
   const concertBannerHtml = `
     <div class="concert-banner" role="region" aria-label="Афиша концертов">
       🎤 Ближайшие концерты — смотрите на Яндекс.Афише!
     </div>
   `;
 
+  // Формируем HTML профиля артиста
   function createArtistProfile(artist) {
     const bannerAndFacts = artist.showBannerAndFacts ? `
       ${concertBannerHtml}
       <div class="facts-section" role="region" aria-label="Интересные факты об артисте">
         <h3>Интересные факты</h3>
         <ul>
-          ${(artistFacts[artist.name] || []).map(f => `<li>${f}</li>`).join('')}
+          ${(artistFacts[artist.name] || []).map(fact => `<li>${fact}</li>`).join('')}
         </ul>
       </div>
-    ` : '';
+    ` : "";
 
     return `
       <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
@@ -336,16 +349,20 @@
           ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
           <div class="buttons">
             <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
-              🎧 Spotify
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 2.598z"/></svg>
+              Spotify
             </a>
             <a href="${artist.yandex}" target="_blank" rel="noopener" class="btn-link yandex" aria-label="Яндекс Музыка профиль ${artist.name}">
-              🎵 Яндекс Музыка
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm3.83 15.23c-.38.063-.757.095-1.14.095-1.652 0-2.998-1.345-2.998-3s1.346-3 2.998-3c.365 0 .722.04 1.067.12.142.03.286.065.426.104v-1.22a3.758 3.758 0 00-3.1-1.63c-2.06 0-3.72 1.66-3.72 3.72 0 2.06 1.66 3.72 3.72 3.72.492 0 .964-.12 1.37-.33v-1.18c-.14.04-.29.075-.43.1z"/></svg>
+              Яндекс Музыка
             </a>
             <a href="${artist.youtube}" target="_blank" rel="noopener" class="btn-link youtube" aria-label="YouTube Music профиль ${artist.name}">
-              ▶ YouTube Music
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 15l5.19-3L10 9v6zM21.8 8.5a3.005 3.005 0 00-2.08-2.12C17.23 6 12 6 12 6s-5.23 0-7.71.38a3.005 3.005 0 00-2.08 2.12A31.64 31.64 0 002 12a31.64 31.64 0 00.21 3.5 3.005 3.005 0 002.08 2.12C6.77 18 12 18 12 18s5.23 0 7.71-.38a3.005 3.005 0 002.08-2.12c.15-.9.21-1.75.21-3.5s-.06-2.6-.21-3.5z"/></svg>
+              YouTube Music
             </a>
             <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="btn-link wikipedia" aria-label="Википедия профиль ${artist.name}">
-              📖 Википедия
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2 3h20v18H2V3zm17 3h-2l-3 6-3-6H5v12h14V6z"/></svg>
+              Wikipedia
             </a>
           </div>
         </div>
@@ -359,18 +376,19 @@
   }
 
   function getQueryParam(param) {
-    return new URLSearchParams(window.location.search).get(param);
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
   }
 
   async function fetchWikiExtract(title) {
     const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
     try {
-      const res = await fetch(endpoint);
-      if (!res.ok) throw new Error("Ошибка загрузки");
-      const data = await res.json();
-      return data.extract_html || data.extract || "Описание не найдено.";
-    } catch {
-      return "<p>Не удалось загрузить описание с Википедии.</p>";
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error('Ошибка загрузки данных');
+      const data = await response.json();
+      return data.extract_html || data.extract || 'Описание не найдено.';
+    } catch (e) {
+      return '<p>Не удалось загрузить описание с Википедии.</p>';
     }
   }
 
@@ -379,13 +397,14 @@
   const profileDiv = document.getElementById('artist-profile');
 
   if (!artistName) {
-    profileDiv.innerHTML = "<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>";
+    profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
   } else {
     const artist = artists.find(a => a.name === artistName);
     if (!artist) {
       profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
     } else {
       profileDiv.innerHTML = createArtistProfile(artist);
+
       const wikiContent = document.getElementById('wiki-content');
       fetchWikiExtract(artist.name).then(html => {
         wikiContent.innerHTML = html;
