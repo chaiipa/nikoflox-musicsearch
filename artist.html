@@ -32,6 +32,17 @@
   .container {
     max-width: 900px;
     width: 100%;
+    animation: fadeInUp 0.7s ease forwards;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   button.btn-back {
     background-color: var(--primary);
@@ -50,49 +61,28 @@
     background-color: var(--primary-hover);
     box-shadow: 0 0 20px rgba(167, 139, 250, 1);
   }
-  /* Концертный баннер */
-  .concert-banner {
-    background: #2c2c54;
-    color: #fff;
-    border-radius: 1rem;
+  /* Афиша баннер сверху */
+  .concerts-banner {
+    background: linear-gradient(90deg, #7c3aedcc, #a78bfacc);
+    border-radius: 1.5rem;
     padding: 1rem 1.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
+    color: white;
+    font-weight: 700;
+    font-size: 1.3rem;
+    user-select: none;
     text-align: center;
-    user-select: none;
+    box-shadow: var(--shadow-glow);
+    transition: background-color 0.3s ease;
   }
-  .concert-banner h2 {
-    margin: 0 0 0.5rem 0;
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: var(--primary);
-  }
-  .concert-banner a {
-    color: var(--primary-hover);
+  .concerts-banner a {
+    color: #ffe600;
     text-decoration: underline;
-    font-weight: 600;
+    font-weight: 900;
   }
-  /* Интересные факты */
-  .facts-section {
-    background: #222222bb;
-    padding: 1.5rem 2rem;
-    border-radius: 1.5rem;
-    box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
-    user-select: text;
-    max-width: 900px;
-    line-height: 1.6;
-    color: var(--text-dark);
-    margin-top: 3rem;
+  .concerts-banner a:hover {
+    color: #fff;
   }
-  .facts-section h3 {
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    user-select: none;
-    color: var(--primary);
-    text-shadow: 0 0 5px var(--primary);
-  }
-  /* Остальной стиль из твоего профиля */
   .artist-header {
     display: flex;
     flex-wrap: wrap;
@@ -203,8 +193,8 @@
     background-color: #254b9a;
     box-shadow: 0 0 25px #254b9acc;
   }
-  .wiki-section {
-    margin-top: 3rem;
+  .wiki-section, .facts-section {
+    margin-top: 2rem;
     background: #222222bb;
     padding: 1.7rem 2rem;
     border-radius: 1.5rem;
@@ -214,7 +204,7 @@
     line-height: 1.6;
     color: var(--text-dark);
   }
-  .wiki-section h3 {
+  .wiki-section h3, .facts-section h3 {
     font-size: 1.6rem;
     margin-bottom: 1rem;
     font-weight: 700;
@@ -250,20 +240,24 @@
 
   <button class="btn-back" onclick="history.back()">← Назад</button>
 
-  <!-- Баннер концертов -->
-  <section class="concert-banner" role="region" aria-label="Афиша концертов артиста">
-    <h2>Концерты</h2>
-    <p>Следите за новыми концертами и выступлениями артиста на <a href="https://afisha.yandex.ru/search?text=" id="concert-link" target="_blank" rel="noopener noreferrer">Яндекс Афиша</a>.</p>
-  </section>
+  <!-- Афиша концертов -->
+  <div id="concerts-banner" class="concerts-banner" role="region" aria-label="Концерты артиста">
+    <!-- Ссылка вставится скриптом -->
+  </div>
 
+  <!-- Профиль артиста -->
   <div id="artist-profile"></div>
 
   <!-- Интересные факты -->
-  <section class="facts-section" role="region" aria-label="Интересные факты об артисте">
+  <section class="facts-section" aria-live="polite" tabindex="0">
     <h3>Интересные факты</h3>
-    <div id="facts-content">
-      <ul id="facts-list" style="padding-left: 1.2rem; margin: 0; user-select: text;"></ul>
-    </div>
+    <div id="facts-content"></div>
+  </section>
+
+  <!-- Описание из Википедии -->
+  <section class="wiki-section" aria-live="polite" tabindex="0">
+    <h3>Описание из Википедии</h3>
+    <div id="wiki-content" class="loading">Загрузка...</div>
   </section>
 
 </div>
@@ -279,10 +273,11 @@
       wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
       foreignAgent: true,
       facts: [
-        "Настоящее имя — Иван Алексеев.",
-        "Начал карьеру в 2003 году.",
-        "Активно занимается благотворительностью."
-      ]
+        "Noize MC активно использует социальные сети для общения с фанатами.",
+        "Его музыка сочетает рэп и рок.",
+        "Участвовал в различных музыкальных фестивалях России."
+      ],
+      afishaId: "noize_mc" // для Яндекс Афиши - пример ID
     },
     {
       name: "Монеточка",
@@ -293,10 +288,11 @@
       wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
       foreignAgent: true,
       facts: [
-        "Настоящее имя — Екатерина Николаева.",
-        "Выпустила 3 студийных альбома.",
-        "Обладает уникальным стилем и голосом."
-      ]
+        "Монеточка начала карьеру в подростковом возрасте.",
+        "Известна своими остроумными текстами.",
+        "Её альбомы получили положительные отзывы критиков."
+      ],
+      afishaId: "monetochka"
     },
     {
       name: "Руки Вверх!",
@@ -307,10 +303,11 @@
       wikipedia: "https://ru.wikipedia.org/wiki/Руки_Вверх!",
       foreignAgent: false,
       facts: [
-        "Группа основана в 1996 году.",
-        "Самый известный хит — \"Крошка моя\".",
-        "Активно выступают и сегодня."
-      ]
+        "Группа \"Руки Вверх!\" была создана в 1996 году.",
+        "Их музыка стала символом 2000-х годов в России.",
+        "Песня \"Крошка моя\" — один из самых известных хитов."
+      ],
+      afishaId: "ruki-vverh"
     },
     {
       name: "mzlff",
@@ -321,10 +318,11 @@
       wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
       foreignAgent: false,
       facts: [
-        "Российский певец и композитор.",
-        "Известен своей атмосферной музыкой.",
-        "Начал карьеру в 2015 году."
-      ]
+        "Mzlff — российский инди-поп музыкант.",
+        "Его стиль характеризуется меланхоличной атмосферой.",
+        "Часто выступает на независимых фестивалях."
+      ],
+      afishaId: "mzlff"
     },
     {
       name: "UMA2RMAN",
@@ -335,18 +333,21 @@
       wikipedia: "https://ru.wikipedia.org/wiki/UMA2RMAN",
       foreignAgent: false,
       facts: [
-        "Русская поп-группа из Нижнего Новгорода.",
-        "Образовались в 2006 году.",
-        "Известны хитами \"Паранойя\" и \"Тает лёд\"."
-      ]
+        "UMA2RMAN — популярная рок-группа из Нижнего Новгорода.",
+        "Их музыка сочетает рок и поп-элементы.",
+        "Группа была образована в 2001 году."
+      ],
+      afishaId: "uma2rman"
     }
   ];
 
+  // Получаем параметр имени артиста из URL
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
   }
 
+  // Функция подгрузки описания из Википедии (REST API)
   async function fetchWikiExtract(title) {
     const endpoint = `https://ru.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
     try {
@@ -359,29 +360,49 @@
     }
   }
 
-  const artistNameRaw = getQueryParam('name');
-  const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
-  const profileDiv = document.getElementById('artist-profile');
-  const factsList = document.getElementById('facts-list');
-  const concertLink = document.getElementById('concert-link');
+  // Отрисовка артиста
+  async function renderArtist() {
+    const artistNameRaw = getQueryParam('name');
+    const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
+    const profileDiv = document.getElementById('artist-profile');
+    const concertsBanner = document.getElementById('concerts-banner');
+    const factsContent = document.getElementById('facts-content');
+    const wikiContent = document.getElementById('wiki-content');
 
-  if (!artistName) {
-    profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
-  } else {
+    if (!artistName) {
+      profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
+      concertsBanner.style.display = 'none';
+      factsContent.innerHTML = '';
+      wikiContent.innerHTML = '';
+      return;
+    }
+
     const artist = artists.find(a => a.name === artistName);
     if (!artist) {
       profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
-    } else {
-      // Обновляем ссылку на афишу с именем артиста
-      concertLink.href = `https://afisha.yandex.ru/search?text=${encodeURIComponent(artist.name)}`;
+      concertsBanner.style.display = 'none';
+      factsContent.innerHTML = '';
+      wikiContent.innerHTML = '';
+      return;
+    }
 
-      // Рендерим профиль
-      profileDiv.innerHTML = `
-        <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
-          <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
-          <div class="artist-info">
-            <h1 class="artist-name">${artist.name}</h1>
-            ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-            <div class="buttons">
-              <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 
+    // Баннер с афишей (если afishaId есть)
+    if (artist.afishaId) {
+      // Пример ссылки Яндекс Афиши, подставляем id артиста
+      const afishaUrl = `https://afisha.yandex.ru/search?what=events&where=msk&q=${encodeURIComponent(artist.afishaId)}`;
+      concertsBanner.innerHTML = `🎤 <strong>Концерты:</strong> <a href="${afishaUrl}" target="_blank" rel="noopener noreferrer">Смотреть афишу</a>`;
+      concertsBanner.style.display = 'block';
+    } else {
+      concertsBanner.style.display = 'none';
+    }
+
+    // Профиль артиста с кнопками
+    profileDiv.innerHTML = `
+      <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
+        <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
+        <div class="artist-info">
+          <h1 class="artist-name">${artist.name}</h1>
+          ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+          <div class="buttons">
+            <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237
