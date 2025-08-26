@@ -196,6 +196,28 @@
     margin-top: 1rem;
     user-select: none;
   }
+  .concert-banner {
+    margin: 2rem 0 1rem 0;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(90deg, #7c3aed88, #a78bfa88);
+    border-radius: 1rem;
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-align: center;
+    box-shadow: var(--shadow-glow);
+    user-select: none;
+  }
+  .facts-section {
+    margin: 1rem 0 3rem 0;
+    background: #222222bb;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    color: var(--text-dark);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
+    max-width: 900px;
+    user-select: text;
+  }
   @media (max-width: 640px) {
     .artist-header {
       flex-direction: column;
@@ -231,7 +253,8 @@
       yandex: "https://music.yandex.ru/artist/5020",
       youtube: "https://music.youtube.com/channel/UC3yA8nDwraeOfnYfBWun83g",
       wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
-      foreignAgent: true
+      foreignAgent: true,
+      showBannerAndFacts: false
     },
     {
       name: "Монеточка",
@@ -240,7 +263,8 @@
       yandex: "https://music.yandex.ru/artist/1132181",
       youtube: "https://music.youtube.com/channel/UCy-k5JKqzIif_qFh2VLe6xA",
       wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
-      foreignAgent: true
+      foreignAgent: true,
+      showBannerAndFacts: true
     },
     {
       name: "Руки Вверх!",
@@ -249,7 +273,8 @@
       yandex: "https://music.yandex.ru/artist/3859",
       youtube: "https://music.youtube.com/channel/UCzqqhJvDzxHkjq_pvTk14hg",
       wikipedia: "https://ru.wikipedia.org/wiki/Руки_Вверх!",
-      foreignAgent: false
+      foreignAgent: false,
+      showBannerAndFacts: true
     },
     {
       name: "mzlff",
@@ -258,7 +283,8 @@
       yandex: "https://music.yandex.ru/artist/5785295",
       youtube: "https://music.youtube.com/channel/UCSrxJxyQOVmLHXOQm9hrc0A",
       wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
-      foreignAgent: false
+      foreignAgent: false,
+      showBannerAndFacts: true
     },
     {
       name: "UMA2RMAN",
@@ -267,9 +293,87 @@
       yandex: "https://music.yandex.ru/artist/1432",
       youtube: "https://music.youtube.com/channel/UCjs0aUeE68c8kHVO3Xft-Mw",
       wikipedia: "https://ru.wikipedia.org/wiki/UMA2RMAN",
-      foreignAgent: false
+      foreignAgent: false,
+      showBannerAndFacts: true
     }
   ];
+
+  // Примеры интересных фактов для каждого артиста:
+  const artistFacts = {
+    "Монеточка": [
+      "Настоящее имя — Екатерина Николаевна Шурова.",
+      "Начала карьеру в 2013 году.",
+      "Известна своим особым стилем и ироничными текстами."
+    ],
+    "Руки Вверх!": [
+      "Группа основана в 1996 году.",
+      "Известна множеством хитов 90-х и 2000-х.",
+      "Ведущий солист — Сергей Жуков."
+    ],
+    "mzlff": [
+      "Современный российский музыкант и продюсер.",
+      "Активно выступает с 2017 года.",
+      "Стиль — электронная и хип-хоп музыка."
+    ],
+    "UMA2RMAN": [
+      "Русская рок-группа из Нижнего Новгорода.",
+      "Основана в 2006 году.",
+      "Известна мелодичными композициями и живыми выступлениями."
+    ]
+  };
+
+  // Пример баннера афиши (просто текст, можно потом заменить iframe/ссылкой)
+  const concertBannerHtml = `
+    <div class="concert-banner" role="region" aria-label="Афиша концертов">
+      🎤 Ближайшие концерты — смотрите на Яндекс.Афише!
+    </div>
+  `;
+
+  // Формируем HTML профиля артиста
+  function createArtistProfile(artist) {
+    const bannerAndFacts = artist.showBannerAndFacts ? `
+      ${concertBannerHtml}
+      <div class="facts-section" role="region" aria-label="Интересные факты об артисте">
+        <h3>Интересные факты</h3>
+        <ul>
+          ${(artistFacts[artist.name] || []).map(fact => `<li>${fact}</li>`).join('')}
+        </ul>
+      </div>
+    ` : "";
+
+    return `
+      <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
+        <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
+        <div class="artist-info">
+          <h1 class="artist-name">${artist.name}</h1>
+          ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
+          <div class="buttons">
+            <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 2.598z"/></svg>
+              Spotify
+            </a>
+            <a href="${artist.yandex}" target="_blank" rel="noopener" class="btn-link yandex" aria-label="Яндекс Музыка профиль ${artist.name}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm3.83 15.23c-.38.063-.757.095-1.14.095-1.652 0-2.998-1.345-2.998-3s1.346-3 2.998-3c.365 0 .722.04 1.067.12.142.03.286.065.426.104v-1.22a3.758 3.758 0 00-3.1-1.63c-2.06 0-3.72 1.66-3.72 3.72 0 2.06 1.66 3.72 3.72 3.72.492 0 .964-.12 1.37-.33v-1.18c-.14.04-.29.075-.43.1z"/></svg>
+              Яндекс Музыка
+            </a>
+            <a href="${artist.youtube}" target="_blank" rel="noopener" class="btn-link youtube" aria-label="YouTube Music профиль ${artist.name}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 15l5.19-3L10 9v6zM21.8 8.5a3.005 3.005 0 00-2.08-2.12C17.23 6 12 6 12 6s-5.23 0-7.71.38a3.005 3.005 0 00-2.08 2.12A31.64 31.64 0 002 12a31.64 31.64 0 00.21 3.5 3.005 3.005 0 002.08 2.12C6.77 18 12 18 12 18s5.23 0 7.71-.38a3.005 3.005 0 002.08-2.12c.15-.9.21-1.75.21-3.5s-.06-2.6-.21-3.5z"/></svg>
+              YouTube Music
+            </a>
+            <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="btn-link wikipedia" aria-label="Википедия профиль ${artist.name}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2 3h20v18H2V3zm17 3h-2l-3 6-3-6H5v12h14V6z"/></svg>
+              Wikipedia
+            </a>
+          </div>
+        </div>
+      </div>
+      ${bannerAndFacts}
+      <section class="wiki-section" aria-live="polite" tabindex="0">
+        <h3>Описание из Википедии</h3>
+        <div id="wiki-content" class="loading">Загрузка...</div>
+      </section>
+    `;
+  }
 
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -299,37 +403,7 @@
     if (!artist) {
       profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
     } else {
-      profileDiv.innerHTML = `
-        <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
-          <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
-          <div class="artist-info">
-            <h1 class="artist-name">${artist.name}</h1>
-            ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
-            <div class="buttons">
-              <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 2.598z"/></svg>
-                Spotify
-              </a>
-              <a href="${artist.yandex}" target="_blank" rel="noopener" class="btn-link yandex" aria-label="Яндекс Музыка профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm3.83 15.23c-.38.063-.757.095-1.14.095-1.652 0-2.998-1.345-2.998-3s1.346-3 2.998-3c.365 0 .722.04 1.067.12.142.03.286.065.426.104v-1.22a3.758 3.758 0 00-3.1-1.63c-2.06 0-3.72 1.66-3.72 3.72 0 2.06 1.66 3.72 3.72 3.72.492 0 .964-.12 1.37-.33v-1.18c-.14.04-.29.075-.43.1z"/></svg>
-                Яндекс Музыка
-              </a>
-              <a href="${artist.youtube}" target="_blank" rel="noopener" class="btn-link youtube" aria-label="YouTube Music профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 15l5.19-3L10 9v6zM21.8 8.5a3.005 3.005 0 00-2.08-2.12C17.23 6 12 6 12 6s-5.23 0-7.71.38a3.005 3.005 0 00-2.08 2.12A31.64 31.64 0 002 12a31.64 31.64 0 00.21 3.5 3.005 3.005 0 002.08 2.12C6.77 18 12 18 12 18s5.23 0 7.71-.38a3.005 3.005 0 002.08-2.12c.15-.9.21-1.75.21-3.5s-.06-2.6-.21-3.5z"/></svg>
-                YouTube Music
-              </a>
-              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="btn-link wikipedia" aria-label="Википедия профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2 3h20v18H2V3zm17 3h-2l-3 6-3-6H5v12h14V6z"/></svg>
-                Wikipedia
-              </a>
-            </div>
-          </div>
-        </div>
-        <section class="wiki-section" aria-live="polite" tabindex="0">
-          <h3>Описание из Википедии</h3>
-          <div id="wiki-content" class="loading">Загрузка...</div>
-        </section>
-      `;
+      profileDiv.innerHTML = createArtistProfile(artist);
 
       const wikiContent = document.getElementById('wiki-content');
       fetchWikiExtract(artist.name).then(html => {
