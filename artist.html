@@ -32,17 +32,6 @@
   .container {
     max-width: 900px;
     width: 100%;
-    animation: fadeInUp 0.7s ease forwards;
-  }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
   button.btn-back {
     background-color: var(--primary);
@@ -61,6 +50,49 @@
     background-color: var(--primary-hover);
     box-shadow: 0 0 20px rgba(167, 139, 250, 1);
   }
+  /* Концертный баннер */
+  .concert-banner {
+    background: #2c2c54;
+    color: #fff;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
+    text-align: center;
+    user-select: none;
+  }
+  .concert-banner h2 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--primary);
+  }
+  .concert-banner a {
+    color: var(--primary-hover);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  /* Интересные факты */
+  .facts-section {
+    background: #222222bb;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+    user-select: text;
+    max-width: 900px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    margin-top: 3rem;
+  }
+  .facts-section h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    user-select: none;
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary);
+  }
+  /* Остальной стиль из твоего профиля */
   .artist-header {
     display: flex;
     flex-wrap: wrap;
@@ -218,7 +250,21 @@
 
   <button class="btn-back" onclick="history.back()">← Назад</button>
 
+  <!-- Баннер концертов -->
+  <section class="concert-banner" role="region" aria-label="Афиша концертов артиста">
+    <h2>Концерты</h2>
+    <p>Следите за новыми концертами и выступлениями артиста на <a href="https://afisha.yandex.ru/search?text=" id="concert-link" target="_blank" rel="noopener noreferrer">Яндекс Афиша</a>.</p>
+  </section>
+
   <div id="artist-profile"></div>
+
+  <!-- Интересные факты -->
+  <section class="facts-section" role="region" aria-label="Интересные факты об артисте">
+    <h3>Интересные факты</h3>
+    <div id="facts-content">
+      <ul id="facts-list" style="padding-left: 1.2rem; margin: 0; user-select: text;"></ul>
+    </div>
+  </section>
 
 </div>
 
@@ -231,7 +277,12 @@
       yandex: "https://music.yandex.ru/artist/5020",
       youtube: "https://music.youtube.com/channel/UC3yA8nDwraeOfnYfBWun83g",
       wikipedia: "https://ru.wikipedia.org/wiki/Noize_MC",
-      foreignAgent: true
+      foreignAgent: true,
+      facts: [
+        "Настоящее имя — Иван Алексеев.",
+        "Начал карьеру в 2003 году.",
+        "Активно занимается благотворительностью."
+      ]
     },
     {
       name: "Монеточка",
@@ -240,7 +291,12 @@
       yandex: "https://music.yandex.ru/artist/1132181",
       youtube: "https://music.youtube.com/channel/UCy-k5JKqzIif_qFh2VLe6xA",
       wikipedia: "https://ru.wikipedia.org/wiki/Монеточка",
-      foreignAgent: true
+      foreignAgent: true,
+      facts: [
+        "Настоящее имя — Екатерина Николаева.",
+        "Выпустила 3 студийных альбома.",
+        "Обладает уникальным стилем и голосом."
+      ]
     },
     {
       name: "Руки Вверх!",
@@ -249,7 +305,12 @@
       yandex: "https://music.yandex.ru/artist/161247",
       youtube: "https://music.youtube.com/channel/UCXtVRwa75QYMboCQKnA7GkQ",
       wikipedia: "https://ru.wikipedia.org/wiki/Руки_Вверх!",
-      foreignAgent: false
+      foreignAgent: false,
+      facts: [
+        "Группа основана в 1996 году.",
+        "Самый известный хит — \"Крошка моя\".",
+        "Активно выступают и сегодня."
+      ]
     },
     {
       name: "mzlff",
@@ -258,7 +319,12 @@
       yandex: "https://music.yandex.com/artist/6236891",
       youtube: "https://music.youtube.com/channel/UC8ynjHCVhCvqZYHY0GiRu4A",
       wikipedia: "https://ru.wikipedia.org/wiki/Mzlff",
-      foreignAgent: false
+      foreignAgent: false,
+      facts: [
+        "Российский певец и композитор.",
+        "Известен своей атмосферной музыкой.",
+        "Начал карьеру в 2015 году."
+      ]
     },
     {
       name: "UMA2RMAN",
@@ -267,7 +333,12 @@
       yandex: "https://music.yandex.com/artist/41128",
       youtube: "https://music.youtube.com/channel/UCiVAFLC2SCWdqh9oOORo8-A",
       wikipedia: "https://ru.wikipedia.org/wiki/UMA2RMAN",
-      foreignAgent: false
+      foreignAgent: false,
+      facts: [
+        "Русская поп-группа из Нижнего Новгорода.",
+        "Образовались в 2006 году.",
+        "Известны хитами \"Паранойя\" и \"Тает лёд\"."
+      ]
     }
   ];
 
@@ -291,6 +362,8 @@
   const artistNameRaw = getQueryParam('name');
   const artistName = artistNameRaw ? decodeURIComponent(artistNameRaw) : null;
   const profileDiv = document.getElementById('artist-profile');
+  const factsList = document.getElementById('facts-list');
+  const concertLink = document.getElementById('concert-link');
 
   if (!artistName) {
     profileDiv.innerHTML = '<p>Артист не выбран. Пожалуйста, вернитесь на главную страницу.</p>';
@@ -299,6 +372,10 @@
     if (!artist) {
       profileDiv.innerHTML = `<p>Артист с именем "${artistName}" не найден.</p>`;
     } else {
+      // Обновляем ссылку на афишу с именем артиста
+      concertLink.href = `https://afisha.yandex.ru/search?text=${encodeURIComponent(artist.name)}`;
+
+      // Рендерим профиль
       profileDiv.innerHTML = `
         <div class="artist-header" role="region" aria-label="Профиль артиста ${artist.name}">
           <img src="${artist.image}" alt="Фото ${artist.name}" class="artist-image" onerror="this.src='https://via.placeholder.com/280x280?text=No+Image'" />
@@ -307,37 +384,4 @@
             ${artist.foreignAgent ? '<div class="badge">Признан иноагентом в РФ</div>' : ''}
             <div class="buttons">
               <a href="${artist.spotify}" target="_blank" rel="noopener" class="btn-link spotify" aria-label="Spotify профиль ${artist.name}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 2.598z"/></svg>
-                Spotify
-              </a>
-              <a href="${artist.yandex}" target="_blank" rel="noopener" class="btn-link yandex" aria-label="Яндекс Музыка профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm3.83 15.23c-.38.063-.757.095-1.14.095-1.652 0-2.998-1.345-2.998-3s1.346-3 2.998-3c.365 0 .722.04 1.067.12.142.03.286.065.426.104v-1.22a3.758 3.758 0 00-3.1-1.63c-2.06 0-3.72 1.66-3.72 3.72 0 2.06 1.66 3.72 3.72 3.72.492 0 .964-.12 1.37-.33v-1.18c-.14.04-.29.075-.43.1z"/></svg>
-                Яндекс Музыка
-              </a>
-              <a href="${artist.youtube}" target="_blank" rel="noopener" class="btn-link youtube" aria-label="YouTube Music профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 15l5.19-3L10 9v6zM21.8 8.5a3.005 3.005 0 00-2.08-2.12C17.23 6 12 6 12 6s-5.23 0-7.71.38a3.005 3.005 0 00-2.08 2.12A31.64 31.64 0 002 12a31.64 31.64 0 00.21 3.5 3.005 3.005 0 002.08 2.12C6.77 18 12 18 12 18s5.23 0 7.71-.38a3.005 3.005 0 002.08-2.12c.15-.9.21-1.75.21-3.5s-.06-2.6-.21-3.5z"/></svg>
-                YouTube Music
-              </a>
-              <a href="${artist.wikipedia}" target="_blank" rel="noopener" class="btn-link wikipedia" aria-label="Википедия профиль ${artist.name}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M2 3h20v18H2V3zm17 3h-2l-3 6-3-6H5v12h14V6z"/></svg>
-                Wikipedia
-              </a>
-            </div>
-          </div>
-        </div>
-        <section class="wiki-section" aria-live="polite" tabindex="0">
-          <h3>Описание из Википедии</h3>
-          <div id="wiki-content" class="loading">Загрузка...</div>
-        </section>
-      `;
-
-      const wikiContent = document.getElementById('wiki-content');
-      fetchWikiExtract(artist.name).then(html => {
-        wikiContent.innerHTML = html;
-      });
-    }
-  }
-</script>
-
-</body>
-</html>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.627 5.372 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm5.3 17.022a.9.9 0 01-1.237.298c-3.386-2.066-7.659-2.533-11.455-1.474a.9.9 0 11-.484-1.722c4.447-1.25 9.228-.66 12.656 1.736a.9.9 0 01.52 1.162zm1.575-2.88a1.125 1.125 0 01-1.54.373c-3.88-2.36-9.802-3.045-14.39-1.768a1.125 1.125 0 11-.613-2.156c5.183-1.474 11.621-.72 16.093 2.04a1.125 1.125 0 01.45 2.11zm.168-3.052c-4.64-2.814-12.384-3.06-16.924-1.778a1.5 1.5 0 11-.795-2.88c5.572-1.536 14.042-1.272 19.479 2.06a1.5 1.5 0 11-1.76 
